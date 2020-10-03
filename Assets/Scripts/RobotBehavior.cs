@@ -61,18 +61,20 @@ public class RobotBehavior : MonoBehaviour {
     }
     
     void TryMove(Vector2Int direction) {
+        Debug.Log("uprobot");
         if (isBroken == false && isControlled) {
             var destination = _gameManager.GetCellTypeAtIndex(_cellIndex + direction);
             if (destination == -1) {
+                Debug.Log("found no tile");
                 return;
             }
 
-            if (destination == 0) {
+            if (destination <= 1) {
                 //wall: add the movement to commands but make no movement
                 _lastCommands.Add(direction);
                 _gameManager.Resimulate(_lastCommands.Count);
             }
-            else if (destination == 1) {
+            else if (destination == 2) {
                 //pit: add the movement to commands and make a movement, but stop the simulation
                 Move(direction);
                 _lastCommands.Add(direction);
@@ -88,7 +90,7 @@ public class RobotBehavior : MonoBehaviour {
 
     private void ApplyTileEffects() {
         var currentTile = _gameManager.GetCellTypeAtIndex(_cellIndex);
-        if (currentTile == 1) {
+        if (currentTile == 2) {
             //pit: set broken to true
             isBroken = true;
         } else if (currentTile == 4) {
@@ -115,15 +117,16 @@ public class RobotBehavior : MonoBehaviour {
         if (isBroken == false) {
             var destination = _gameManager.GetCellTypeAtIndex(_cellIndex + direction);
             if (destination == -1) {
+                Debug.Log("found no tile");
                 return false;
             }
 
-            if (destination == 0) {
+            if (destination <= 1) {
                 //wall: add the movement to commands but make no movement
                 return false;
             }
 
-            if (destination == 1) {
+            if (destination == 2) {
                 //pit: make a movement, but stop the simulation
                 Move(direction);
                 return true;

@@ -116,6 +116,7 @@ public class GameManager : MonoBehaviour {
     }
     
     public void OnMoveUp() {
+        Debug.Log("up" + robots.Count.ToString());
         robots[_activeRobot].OnMoveUp();
     }
 
