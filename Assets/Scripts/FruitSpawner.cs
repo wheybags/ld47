@@ -8,7 +8,6 @@ public class FruitSpawner : MonoBehaviour
 
     private GameManager _gameManager;
     private SpriteRenderer _renderer;
-    private Sprite _sprite;
     #endregion
     
     #region Members
@@ -21,15 +20,13 @@ public class FruitSpawner : MonoBehaviour
     // Start is called before the first frame update
     void Start() {
         _gameManager = FindObjectOfType<GameManager>();
-        _renderer = GetComponent<SpriteRenderer>();
-        _sprite = _renderer.sprite;
-        _renderer.sprite = null;
+        _renderer = GetComponentInChildren<SpriteRenderer>();
         FixToTileCenter();
         RespawnFruit();
     }
 
     public void RespawnFruit() {
-        _renderer.sprite = _sprite;
+        _renderer.color = Color.white;
         isStocked = true;
     }
 
@@ -42,7 +39,7 @@ public class FruitSpawner : MonoBehaviour
     public bool Harvest() {
         if (isStocked) {
             isStocked = false;
-            _renderer.sprite = null;
+            _renderer.color = Color.clear;
             return true;
         }
         return false;
