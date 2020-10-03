@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Tilemaps;
 
 public class RobotBehavior : MonoBehaviour {
 
@@ -63,49 +64,61 @@ public class RobotBehavior : MonoBehaviour {
     void TryMove(Vector2Int direction) {
         Debug.Log("uprobot");
         if (isBroken == false && isControlled) {
-            var destination = _gameManager.GetCellTypeAtIndex(_cellIndex + direction);
-            if (destination == -1) {
-                Debug.Log("found no tile");
-                return;
-            }
+            TileType targetTileType = _gameManager.GetCellTypeAtIndex(_cellIndex + direction);
 
-            if (destination <= 1) {
-                //wall: add the movement to commands but make no movement
-                _lastCommands.Add(direction);
-                _gameManager.Resimulate(_lastCommands.Count);
-            }
-            else if (destination == 2) {
-                //pit: add the movement to commands and make a movement, but stop the simulation
-                Move(direction);
-                _lastCommands.Add(direction);
-            }
-            else {
-                //walkable: do the movement and add it to commands then run the simulation once
-                Move(direction);
-                _lastCommands.Add(direction);
-                _gameManager.Resimulate(_lastCommands.Count);
+            switch (targetTileType)
+            {
+                case TileType.Block: 
+                {
+                    //wall: add the movement to commands but make no movement
+                    _lastCommands.Add(direction);
+                    _gameManager.Resimulate(_lastCommands.Count);
+                    break;
+                }
+                case TileType.Die:
+                {
+                    //pit: add the movement to commands and make a movement, but stop the simulation
+                    Move(direction);
+                    _lastCommands.Add(direction);
+                    break;
+                }
+                case TileType.Floor:
+                {
+                    //walkable: do the movement and add it to commands then run the simulation once
+                    Move(direction);
+                    _lastCommands.Add(direction);
+                    _gameManager.Resimulate(_lastCommands.Count);
+                    break;
+                }
             }
         }
     }
 
     private void ApplyTileEffects() {
-        var currentTile = _gameManager.GetCellTypeAtIndex(_cellIndex);
-        if (currentTile == 2) {
-            //pit: set broken to true
+        TileBase currentTile = _gameManager.GetCellAtIndex(_cellIndex);
+        TileType currentTileType = _gameManager.GetTileType(currentTile);
+
+        if (currentTileType == TileType.Die)
             isBroken = true;
-        } else if (currentTile == 4) {
-            //landing on a fruit spawner
-            var collider =
-                Physics2D.OverlapCircle((Vector2) transform.position, 0.5f, LayerMask.NameToLayer("Resource"));
-            if (collider) {
+
+        if (currentTile == _gameManager.fruitTile)
+        {
+            // landing on a fruit spawner
+            var collider = Physics2D.OverlapCircle((Vector2)transform.position, 0.5f, LayerMask.NameToLayer("Resource"));
+            if (collider)
+            {
                 var spawner = collider.gameObject.GetComponent<FruitSpawner>();
-                if (spawner && spawner.Harvest()) {
+                if (spawner && spawner.Harvest())
+                {
                     Debug.Log("harvested fruit");
                     SetCarryFull(spawner);
                 }
             }
-        } else if (currentTile == 3) {
-            //returning to the start
+        }
+
+        if (currentTile == _gameManager.startTile)
+        {
+            // returning to the start
             if (_isCarrying) {
                 _harvestedFrom.RespawnFruit();
                 SetCarryEmpty();
@@ -114,27 +127,21 @@ public class RobotBehavior : MonoBehaviour {
     }
 
     private bool SimulatedMove(Vector2Int direction) {
-        if (isBroken == false) {
-            var destination = _gameManager.GetCellTypeAtIndex(_cellIndex + direction);
-            if (destination == -1) {
-                Debug.Log("found no tile");
-                return false;
-            }
+        if (isBroken)
+            return false;
 
-            if (destination <= 1) {
-                //wall: add the movement to commands but make no movement
-                return false;
-            }
+        TileType targetTileType = _gameManager.GetCellTypeAtIndex(_cellIndex + direction);
 
-            if (destination == 2) {
-                //pit: make a movement, but stop the simulation
+        switch (targetTileType)
+        {
+            case TileType.Block: 
+                return false;
+            case TileType.Die:
                 Move(direction);
                 return true;
-            }
-
-            //walkable: do the movement
-            Move(direction);
-            return false;
+            case TileType.Floor:
+                Move(direction);
+                return false;
         }
 
         return false;

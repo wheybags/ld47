@@ -1,12 +1,37 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Assertions;
 using UnityEngine.Tilemaps;
+
+public enum TileType
+{
+    Block,
+    Floor,
+    Die
+}
 
 public class GameManager : MonoBehaviour {
     #region References
     public Tilemap mainMap;
-    public List<TileBase> tileIndexes;
+    public Tilemap shadowMap;
+
+    public TileBase wallTopNormal;
+    public TileBase wallTopBottom;
+    public TileBase wallSide;
+    public TileBase startTile;
+    public TileBase fruitTile;
+    public TileBase floorTile;
+    public TileBase pitTile;
+    public TileBase voidTile;
+
+    public TileBase shadowTL;
+    public TileBase shadowL;
+    public TileBase shadowT;
+    public TileBase shadowTriangle;
+    public TileBase shadowOuterCorner;
+    
     public List<RobotBehavior> robots;
     public GameObject robotPrefab;
     #endregion
@@ -17,7 +42,10 @@ public class GameManager : MonoBehaviour {
     private int _waitSteps = 0;
     #endregion
 
-    void Start() {
+    void Start()
+    {
+        SetupShadowMap();
+
         robots = new List<RobotBehavior>();
         var robotGOs = GameObject.FindGameObjectsWithTag("Player");
         foreach (var robot in robotGOs) {
@@ -32,7 +60,7 @@ public class GameManager : MonoBehaviour {
         for (var x = bounds.min.x; x < bounds.max.x; x++) {
             for (var y = bounds.min.y; y < bounds.max.y; y++) {
                 var tile = mainMap.GetTile(new Vector3Int(x, y, 0));
-                if (tile == tileIndexes[3]) {
+                if (tile == startTile) {
                     _startTileIndex = new Vector2Int(x,y);
                     break;
                 }
@@ -41,6 +69,40 @@ public class GameManager : MonoBehaviour {
         SpawnRobot(0);
         _activeRobot = 0;
         SetControlledRobot(_activeRobot);
+
+    }
+
+    private void SetupShadowMap()
+    {
+        Func<int, int, TileBase> get = (int x, int y) =>
+        {
+            if (x > mainMap.cellBounds.max.x || x < mainMap.cellBounds.min.x || y > mainMap.cellBounds.max.y || y < mainMap.cellBounds.min.y)
+                return null;
+
+            return mainMap.GetTile(new Vector3Int(x, y, 0));
+        };
+
+        for (int y = mainMap.cellBounds.max.y - 1; y >= mainMap.cellBounds.min.y; y--)
+        {
+            for (int x = mainMap.cellBounds.min.x; x < mainMap.cellBounds.max.x; x++)
+            {
+                if (get(x, y) == wallSide && (get(x - 1, y) == wallTopBottom || get(x - 1, y) == wallTopNormal))
+                    shadowMap.SetTile(new Vector3Int(x, y, 0), shadowTriangle);
+                else if (GetTileType(get(x - 1, y)) == TileType.Block && GetTileType(get(x, y + 1)) == TileType.Block && GetTileType(get(x, y)) == TileType.Floor)
+                    shadowMap.SetTile(new Vector3Int(x, y, 0), shadowTL);
+                else if (get(x, y + 1) == wallSide)
+                    shadowMap.SetTile(new Vector3Int(x, y, 0), shadowT);
+                else if (GetTileType(get(x - 1, y)) == TileType.Block && GetTileType(get(x, y)) == TileType.Floor)
+                    shadowMap.SetTile(new Vector3Int(x, y, 0), shadowL);
+
+                if (y != mainMap.cellBounds.max.y - 1 &&
+                    (shadowMap.GetTile(new Vector3Int(x - 1, y, 0)) == shadowT || (shadowMap.GetTile(new Vector3Int(x - 1, y, 0)) == shadowTL)) &&
+                    shadowMap.GetTile(new Vector3Int(x, y + 1, 0)) == shadowL)
+                {
+                    shadowMap.SetTile(new Vector3Int(x, y, 0), shadowOuterCorner);
+                }
+            }
+        }
     }
 
     private void SpawnRobot(int fruitType) {
@@ -93,17 +155,40 @@ public class GameManager : MonoBehaviour {
             }
         }
     }
-    
-    public int GetCellTypeAtIndex(Vector2Int cellIndex) {
-        TileBase tile = mainMap.GetTile(new Vector3Int(cellIndex.x, cellIndex.y, 0));
 
-        for (var i = 0; i < tileIndexes.Count; i++) {
-            if (tileIndexes[i] == tile) {
-                return i;
-            }
-        }
-        
-        return -1;
+    public TileBase GetCellAtIndex(Vector2Int cellIndex)
+    {
+        return mainMap.GetTile(new Vector3Int(cellIndex.x, cellIndex.y, 0));
+    }
+
+    public TileType GetCellTypeAtIndex(Vector2Int cellIndex)
+    {
+        TileBase tile = GetCellAtIndex(cellIndex);
+        return GetTileType(tile);
+    }
+
+    public TileType GetTileType(TileBase tile)
+    {
+        if (tile == null)
+            return TileType.Floor;
+        if (tile == wallTopNormal)
+            return TileType.Block;
+        if (tile == wallTopBottom)
+            return TileType.Block;
+        if (tile == wallSide)
+            return TileType.Block;
+        if (tile == startTile)
+            return TileType.Floor;
+        if (tile == fruitTile)
+            return TileType.Floor;
+        if (tile == floorTile)
+            return TileType.Floor;
+        if (tile == pitTile)
+            return TileType.Die;
+        if (tile == voidTile)
+            return TileType.Floor;
+
+        throw new System.Exception("unregistered tile encountered");
     }
 
     public Vector2Int GetCellIndexAtPosition(Vector3 position) {
@@ -152,6 +237,6 @@ public class GameManager : MonoBehaviour {
     }
 
     public void SetIndexToSpawner(Vector2Int cellIndex) {
-        mainMap.SetTile((Vector3Int) cellIndex, tileIndexes[4]);
+        mainMap.SetTile((Vector3Int) cellIndex, fruitTile);
     }
 }
