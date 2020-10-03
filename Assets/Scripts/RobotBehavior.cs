@@ -21,11 +21,20 @@ public class RobotBehavior : MonoBehaviour {
     [SerializeField] private List<Vector2Int> _lastCommands;
     private int _commandIndex;
     #endregion
+
+    Color[] tints =
+    {
+        new Color(1.5f, 0.3f, 0.3f, 1),
+        new Color(0.0f, 1.5f, 0.5f, 1),
+        new Color(0.0f, 0.5f, 2.0f, 1),
+        new Color(2.0f, 2.0f, 1.0f, 1),
+        new Color(1.7f, 1.0f, 1.0f, 1),
+    };
     
     void Start() {
         _carriedItemGO = transform.Find("CarriedItem").gameObject;
         _gameManager = FindObjectOfType<GameManager>();
-        GetComponent<SpriteRenderer>().color = Random.ColorHSV(0f,1f,0.4f,0.5f,0.4f,0.5f);
+        GetComponent<SpriteRenderer>().material.color = tints[Random.Range(0, tints.Length)];
         _lastCommands = new List<Vector2Int>();
         _cellIndex = _gameManager.GetCellIndexAtPosition(transform.position);
         _spawnIndex = _cellIndex;
