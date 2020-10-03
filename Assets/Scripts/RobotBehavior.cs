@@ -51,6 +51,17 @@ public class RobotBehavior : MonoBehaviour {
 
     private void Update()
     {
+        if (isBroken && GetComponent<Animator>().speed > 0)
+        {
+            GetComponent<Animator>().speed = 0;
+            GetComponent<SpriteRenderer>().flipY = true;
+        }
+        if (!isBroken && GetComponent<Animator>().speed <= 0)
+        {
+            GetComponent<Animator>().speed = 1;
+            GetComponent<SpriteRenderer>().flipY = false;
+        }
+
         if (lastMoveLeftRight == LRDirection.Left && !GetComponent<SpriteRenderer>().flipX)
             GetComponent<SpriteRenderer>().flipX = true;
         else if (lastMoveLeftRight == LRDirection.Right && GetComponent<SpriteRenderer>().flipX)
