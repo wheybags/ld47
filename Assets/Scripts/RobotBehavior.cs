@@ -20,6 +20,14 @@ public class RobotBehavior : MonoBehaviour {
     private FruitSpawner _harvestedFrom;
     [SerializeField] private List<Vector2Int> _lastCommands;
     private int _commandIndex;
+
+    enum LRDirection
+    {
+        Left,
+        Right
+    }
+    private LRDirection lastMoveLeftRight = LRDirection.Right;
+
     #endregion
 
     Color[] tints =
@@ -39,6 +47,14 @@ public class RobotBehavior : MonoBehaviour {
         _cellIndex = _gameManager.GetCellIndexAtPosition(transform.position);
         _spawnIndex = _cellIndex;
         ResetSimulation();
+    }
+
+    private void Update()
+    {
+        if (lastMoveLeftRight == LRDirection.Left && !GetComponent<SpriteRenderer>().flipX)
+            GetComponent<SpriteRenderer>().flipX = true;
+        else if (lastMoveLeftRight == LRDirection.Right && GetComponent<SpriteRenderer>().flipX)
+            GetComponent<SpriteRenderer>().flipX = false;
     }
 
     public void SetControlledState(bool state) {
@@ -62,12 +78,18 @@ public class RobotBehavior : MonoBehaviour {
         _commandIndex = -1;
         isBroken = false;
         Move(Vector2Int.zero);
+        lastMoveLeftRight = LRDirection.Right;
     }
 
     void Move(Vector2Int direction) {
         transform.position = _gameManager.GetTileCenterPosition(_cellIndex + direction);
         _cellIndex += direction;
         ApplyTileEffects();
+
+        if (direction.x > 0)
+            lastMoveLeftRight = LRDirection.Right;
+        else if (direction.x < 0)
+            lastMoveLeftRight = LRDirection.Left;
     }
     
     void TryMove(Vector2Int direction) {
