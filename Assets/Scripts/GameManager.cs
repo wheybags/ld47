@@ -6,6 +6,9 @@ using UnityEngine.Assertions;
 using UnityEngine.SceneManagement;
 using UnityEngine.Tilemaps;
 using UnityEngine.UI;
+using UnityEngine.UIElements;
+using Button = UnityEngine.UI.Button;
+using Image = UnityEngine.UI.Image;
 
 public enum TileType
 {
@@ -43,6 +46,8 @@ public class GameManager : MonoBehaviour {
     public List<Button> robotButtons;
     public GameObject robotPrefab;
 
+    public GameObject buttonPanel;
+    
     public Text energyGui;
     public Text winText;
 
@@ -138,6 +143,7 @@ public class GameManager : MonoBehaviour {
                 autoDelay = Math.Max(autoDelay - 0.1f, 0.2f);
                 winText.enabled = true;
                 complete = true;
+                buttonPanel.SetActive(false);
             }
 
             int newTick = _tick + 1;
@@ -234,10 +240,25 @@ public class GameManager : MonoBehaviour {
         foreach (var spawn in spawns) {
             spawn.DeactivateSpawner();
         }
-        
+
         _activeRobot = robotIndex;
+
+        foreach (var button in robotButtons) {
+            button.GetComponent<Image>().color = Color.white;
+        }
+        
         if (_activeRobot > -1) {
             spawns[_activeRobot].ActivateSpawner();
+            robotButtons[_activeRobot].GetComponent<Image>().color = Color.green;
+        }
+        
+        for (var i = 0; i < robotButtons.Count; i++) {
+            if (i < _maxRobots) {
+                robotButtons[i].interactable = true;
+            }
+            else {
+                robotButtons[i].interactable = false;
+            }
         }
     }
 
@@ -347,9 +368,20 @@ public class GameManager : MonoBehaviour {
     public void RelinquishControl(RobotBehavior robot) {
         if (_activeRobot > -1 && robot == robots[_activeRobot]) {
             SetControlledRobot(-1);
-            _maxRobots++;
+            if (_maxRobots < fruits.Count) {
+                _maxRobots++;
+            }
+
             _tick = -1;
             _nextAutoMove = Time.time + 0.1f;
+            for (var i = 0; i < robotButtons.Count; i++) {
+                if (i < _maxRobots) {
+                    robotButtons[i].interactable = true;
+                }
+                else {
+                    robotButtons[i].interactable = false;
+                }
+            }
         }
     }
     
@@ -410,29 +442,32 @@ public class GameManager : MonoBehaviour {
     }
 
     void ChangeToRobot(int robotIndex) {
-        if (robotIndex < _maxRobots) {
+        if (robotIndex < _maxRobots && complete == false) {
             Resimulate(0, false);
             robots[robotIndex].ClearCommands();
             SetControlledRobot(robotIndex);
         }
     }
     
-    void OnGhost1Select() {
+    public void OnGhost1Select() {
         ChangeToRobot(0);
     }
     
-    void OnGhost2Select() {
+    public void OnGhost2Select() {
         ChangeToRobot(1);
     }
     
-    void OnGhost3Select() {
+    public void OnGhost3Select() {
         ChangeToRobot(2);
     }
     
-    void OnGhost4Select() {
+    public void OnGhost4Select() {
         ChangeToRobot(3);
     }
 
+    public void OnGhost5Select() {
+        ChangeToRobot(4);
+    }
     public void SetIndexToActiveSpawner(Vector2Int cellIndex) {
          mainMap.SetTile((Vector3Int) cellIndex, activeStartTile);
      }
