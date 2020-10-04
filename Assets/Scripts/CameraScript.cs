@@ -22,5 +22,8 @@ public class CameraScript : MonoBehaviour
     {
         foreach (var robot in gameManager.robots)
             robot.CustomOnPreRender();
+
+        foreach (var fruit in gameManager.fruits)
+            fruit.CustomOnPreRender();
     }
 }

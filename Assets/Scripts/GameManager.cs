@@ -300,9 +300,6 @@ public class GameManager : MonoBehaviour {
         ResetSimulation();
         _tick = steps;
         
-        foreach (var fruit in fruits) {
-            fruit.RespawnFruit();
-        }
 
         bool stop = false;
         for (var s = 0; s < steps; s++) {
