@@ -15,7 +15,7 @@ public class RobotBehavior : MonoBehaviour {
     #region Members
     public bool isControlled = false;
     public bool isBroken;
-    private Vector2Int _cellIndex;
+    public Vector2Int cellIndex { get; private set; }
     private Vector2Int _previousCellIndex;
     private float _lastMoveTime = 0;
 
@@ -25,6 +25,7 @@ public class RobotBehavior : MonoBehaviour {
     private FruitSpawner _harvestedFrom;
     [SerializeField] private List<Vector2Int> _lastCommands;
     private int _commandIndex;
+    private int spawnTick;
 
     enum LRDirection
     {
@@ -51,8 +52,8 @@ public class RobotBehavior : MonoBehaviour {
         _gameManager = FindObjectOfType<GameManager>();
         _renderer.material.color = tints[Random.Range(0, tints.Length)];
         _lastCommands = new List<Vector2Int>();
-        _cellIndex = _gameManager.GetCellIndexAtPosition(transform.position);
-        _spawnIndex = _cellIndex;
+        cellIndex = _gameManager.GetCellIndexAtPosition(transform.position);
+        _spawnIndex = cellIndex;
         ResetSimulation();
     }
 
@@ -65,7 +66,7 @@ public class RobotBehavior : MonoBehaviour {
             float timeSinceMove = Time.time - _lastMoveTime;
             float alpha = timeSinceMove * 1 / movementTimeInSeconds;
 
-            transform.position = Vector3.Lerp(_gameManager.GetTileCenterPosition(_previousCellIndex), _gameManager.GetTileCenterPosition(_cellIndex), alpha);
+            transform.position = Vector3.Lerp(_gameManager.GetTileCenterPosition(_previousCellIndex), _gameManager.GetTileCenterPosition(cellIndex), alpha);
 
             if (alpha >= 1)
             {
@@ -110,8 +111,8 @@ public class RobotBehavior : MonoBehaviour {
     }
     
     public void ResetSimulation() {
+        cellIndex = _spawnIndex;
         transform.position = _gameManager.GetTileCenterPosition(_spawnIndex);
-        _cellIndex = _spawnIndex;
         _previousCellIndex = _spawnIndex;
         _lastMoveTime = -1;
         SetCarryEmpty();
@@ -122,20 +123,25 @@ public class RobotBehavior : MonoBehaviour {
     }
 
     void Move(Vector2Int direction) {
-        _previousCellIndex = _cellIndex;
-        _cellIndex += direction;
-        _lastMoveTime = Time.time;
+        if (_gameManager.isCellBlockedByRobot(cellIndex + direction) == false) {
+            _previousCellIndex = cellIndex;
+            transform.position = _gameManager.GetTileCenterPosition(cellIndex + direction);
+            cellIndex += direction;
+            _lastMoveTime = Time.time;
 
-        if (direction.x > 0)
-            lastMoveLeftRight = LRDirection.Right;
-        else if (direction.x < 0)
+            if (direction.x > 0) {
+                lastMoveLeftRight = LRDirection.Right;
+            }
+        }
+        else if (direction.x < 0) {
             lastMoveLeftRight = LRDirection.Left;
+        }
     }
     
     void TryMove(Vector2Int direction) {
-        Debug.Log("uprobot");
+        
         if (isBroken == false && isControlled && _lastMoveTime == -1) {
-            TileType targetTileType = _gameManager.GetCellTypeAtIndex(_cellIndex + direction);
+            TileType targetTileType = _gameManager.GetCellTypeAtIndex(cellIndex + direction);
 
             switch (targetTileType)
             {
@@ -166,7 +172,7 @@ public class RobotBehavior : MonoBehaviour {
     }
 
     private void ApplyTileEffects() {
-        TileBase currentTile = _gameManager.GetCellAtIndex(_cellIndex);
+        TileBase currentTile = _gameManager.GetCellAtIndex(cellIndex);
         TileType currentTileType = _gameManager.GetTileType(currentTile);
 
         if (currentTileType == TileType.Die)
@@ -175,7 +181,7 @@ public class RobotBehavior : MonoBehaviour {
         if (currentTile == _gameManager.fruitTile)
         {
             // landing on a fruit spawner
-            var collider = Physics2D.OverlapCircle(_cellIndex, 0.5f, LayerMask.NameToLayer("Resource"));
+            var collider = Physics2D.OverlapCircle(new Vector3(transform.position.x,transform.position.y,0), 0.5f, LayerMask.NameToLayer("Resource"));
             if (collider)
             {
                 var spawner = collider.gameObject.GetComponent<FruitSpawner>();
@@ -193,6 +199,7 @@ public class RobotBehavior : MonoBehaviour {
             if (_isCarrying) {
                 _harvestedFrom.RespawnFruit();
                 SetCarryEmpty();
+                _gameManager.RelinquishControl(this);
             }
         }
     }
@@ -201,7 +208,7 @@ public class RobotBehavior : MonoBehaviour {
         if (isBroken)
             return false;
 
-        TileType targetTileType = _gameManager.GetCellTypeAtIndex(_cellIndex + direction);
+        TileType targetTileType = _gameManager.GetCellTypeAtIndex(cellIndex + direction);
 
         switch (targetTileType)
         {

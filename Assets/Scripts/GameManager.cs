@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Assertions;
 using UnityEngine.Tilemaps;
+using UnityEngine.UI;
 
 public enum TileType
 {
@@ -34,18 +35,22 @@ public class GameManager : MonoBehaviour {
     
     public List<RobotBehavior> robots;
     public GameObject robotPrefab;
+    public Text tickText;
     #endregion
 
     #region Members
     private int _activeRobot;
     private Vector2Int _startTileIndex;
     private int _waitSteps = 0;
+    private int _tick;
+    private int _nextSpawnTick = 0;
+    private float _nextAutoMove;
     #endregion
 
     void Start()
     {
         SetupShadowMap();
-
+        
         robots = new List<RobotBehavior>();
         var robotGOs = GameObject.FindGameObjectsWithTag("Player");
         foreach (var robot in robotGOs) {
@@ -66,9 +71,28 @@ public class GameManager : MonoBehaviour {
                 }
             }
         }
-        SpawnRobot(0);
-        _activeRobot = 0;
-        SetControlledRobot(_activeRobot);
+
+        _nextSpawnTick = 0;
+        _activeRobot = -1;
+        // SpawnRobot(0);
+        // _activeRobot = 0;
+        // SetControlledRobot(_activeRobot);
+    }
+
+    void Update() {
+        if (_activeRobot < 0 && Time.time > _nextAutoMove) {
+            Debug.Log("automove");
+            _nextAutoMove += 0.5f;
+            Resimulate(_tick + 1 );
+        }
+
+        if (_tick >= _nextSpawnTick && isCellBlockedByRobot(_startTileIndex) == false) {
+            SpawnRobot(0);
+            SetControlledRobot(0);
+            _nextSpawnTick += 10000;
+        }
+
+        //tickText.text = "Tick: " + _tick.ToString();
 
     }
 
@@ -105,33 +129,36 @@ public class GameManager : MonoBehaviour {
         }
     }
 
+    public bool isCellBlockedByRobot(Vector2Int cellIndex) {
+        foreach (var robot in robots) {
+            if (cellIndex == robot.cellIndex && robot.gameObject.activeInHierarchy) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+    
     private void SpawnRobot(int fruitType) {
         var newRobot = GameObject.Instantiate(robotPrefab,
-            mainMap.CellToWorld((Vector3Int) _startTileIndex), Quaternion.identity);
+            mainMap.GetCellCenterWorld((Vector3Int) _startTileIndex), Quaternion.identity);
         var behavior = newRobot.GetComponent<RobotBehavior>(); 
         behavior.SetRequiredFruitType(fruitType);
         robots.Add(behavior);
     }
 
     public void SetControlledRobot(int robotIndex) {
-        if (robots[robotIndex]) {
-            foreach (var robot in robots) {
-                robot.SetControlledState(false);
-            }
+        foreach (var robot in robots) {
+            robot.SetControlledState(false);
+        }
+        if (robotIndex > -1 && robots[robotIndex]) {
             robots[robotIndex].SetControlledState(true);
         }
-    }
 
-    public void SelectNextRobot() {
-        Debug.Log("change robot " + _activeRobot.ToString());
-        _activeRobot++;
-        if (_activeRobot == robots.Count) {
-            _activeRobot -= robots.Count;
-        }
-        SetControlledRobot(_activeRobot);
+        _activeRobot = robotIndex;
     }
-    
     public void Resimulate(int steps) {
+        _tick = steps;
         foreach (var robot in robots) {
             robot.ResetSimulation();
         }
@@ -167,6 +194,12 @@ public class GameManager : MonoBehaviour {
         return GetTileType(tile);
     }
 
+    public void RelinquishControl(RobotBehavior robot) {
+        if (_activeRobot > -1 && robot == robots[_activeRobot]) {
+            SetControlledRobot(-1);
+        }
+    }
+    
     public TileType GetTileType(TileBase tile)
     {
         if (tile == null)
@@ -201,41 +234,41 @@ public class GameManager : MonoBehaviour {
     }
     
     public void OnMoveUp() {
-        Debug.Log("up" + robots.Count.ToString());
-        robots[_activeRobot].OnMoveUp();
+        if (_activeRobot > -1) {
+            robots[_activeRobot].OnMoveUp();
+        }
     }
 
     public void OnMoveDown() {
-        robots[_activeRobot].OnMoveDown();
+        if (_activeRobot > -1) {
+            robots[_activeRobot].OnMoveDown();
+        }
     }
 
     public void OnMoveLeft() {
-        robots[_activeRobot].OnMoveLeft();
+        if (_activeRobot > -1) {
+            robots[_activeRobot].OnMoveLeft();
+        }
     }
 
     public void OnMoveRight() {
-        robots[_activeRobot].OnMoveRight();
+        if (_activeRobot > -1) {
+            robots[_activeRobot].OnMoveRight();
+        }
     }
     
     void OnChangeRobot() {
-        robots[_activeRobot].SetControlledState(false);
-        SpawnRobot(_activeRobot+1);
-        SelectNextRobot();
+        // robots[_activeRobot].SetControlledState(false);
+        // SpawnRobot(_activeRobot+1);
+        // SelectNextRobot();
     }
 
     void OnUndo() {
-        int step = robots[_activeRobot].OnUndo();
-        Resimulate(step);
+        if (_activeRobot > -1) {
+            int step = robots[_activeRobot].OnUndo();
+            Resimulate(step);
+        }
     }
-    
-    public void OnWait() {
-        _waitSteps++;
-        int step = robots[_activeRobot].OnUndo();
-        robots[_activeRobot].isControlled = false;
-        Resimulate(step+_waitSteps);
-        robots[_activeRobot].isControlled = true;
-    }
-
     public void SetIndexToSpawner(Vector2Int cellIndex) {
         mainMap.SetTile((Vector3Int) cellIndex, fruitTile);
     }
