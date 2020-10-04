@@ -22,7 +22,8 @@ public class GameManager : MonoBehaviour {
     public TileBase wallTopNormal;
     public TileBase wallTopBottom;
     public TileBase wallSide;
-    public TileBase startTile;
+    public TileBase activeStartTile;
+    public TileBase inactiveStartTile;
     public TileBase fruitTile;
     public TileBase floorTile;
     public TileBase pitTile;
@@ -36,6 +37,7 @@ public class GameManager : MonoBehaviour {
     
     public List<RobotBehavior> robots;
     public List<FruitSpawner> fruits;
+    public List<GhostSpawn> spawns;
     public GameObject robotPrefab;
     #endregion
 
@@ -65,15 +67,15 @@ public class GameManager : MonoBehaviour {
 
         mainMap.CompressBounds();
         var bounds = mainMap.cellBounds;
-        for (var x = bounds.min.x; x < bounds.max.x; x++) {
-            for (var y = bounds.min.y; y < bounds.max.y; y++) {
-                var tile = mainMap.GetTile(new Vector3Int(x, y, 0));
-                if (tile == startTile) {
-                    _startTileIndex = new Vector2Int(x,y);
-                    break;
-                }
-            }
-        }
+        // for (var x = bounds.min.x; x < bounds.max.x; x++) {
+        //     for (var y = bounds.min.y; y < bounds.max.y; y++) {
+        //         var tile = mainMap.GetTile(new Vector3Int(x, y, 0));
+        //         if (tile == startTile) {
+        //             _startTileIndex = new Vector2Int(x,y);
+        //             break;
+        //         }
+        //     }
+        // }
 
         for (var i = 0; i < fruits.Count; i++) {
             fruits[i].fruitType = i;
@@ -174,7 +176,7 @@ public class GameManager : MonoBehaviour {
 
     private void SpawnRobot(int fruitType) {
         var newRobot = GameObject.Instantiate(robotPrefab,
-            mainMap.CellToWorld((Vector3Int) _startTileIndex), Quaternion.identity);
+            mainMap.CellToWorld((Vector3Int) spawns[fruitType].cellIndex), Quaternion.identity);
         var behavior = newRobot.GetComponent<RobotBehavior>(); 
         behavior.SetSpawnWait(robots.Count);
         behavior.SetRequiredFruitType(fruitType);
@@ -189,7 +191,14 @@ public class GameManager : MonoBehaviour {
             robots[robotIndex].SetControlledState(true);
         }
 
+        foreach (var spawn in spawns) {
+            spawn.DeactivateSpawner();
+        }
+        
         _activeRobot = robotIndex;
+        if (_activeRobot > -1) {
+            spawns[_activeRobot].ActivateSpawner();
+        }
     }
 
     public void SelectNextRobot() {
@@ -269,7 +278,9 @@ public class GameManager : MonoBehaviour {
             return TileType.Block;
         if (tile == wallSide)
             return TileType.Block;
-        if (tile == startTile)
+        if (tile == inactiveStartTile)
+            return TileType.Floor;
+        if (tile == activeStartTile)
             return TileType.Floor;
         if (tile == fruitTile)
             return TileType.Floor;
@@ -336,7 +347,15 @@ public class GameManager : MonoBehaviour {
         }
     }
 
-    public void SetIndexToSpawner(Vector2Int cellIndex) {
+    public void SetIndexToActiveSpawner(Vector2Int cellIndex) {
+         mainMap.SetTile((Vector3Int) cellIndex, activeStartTile);
+     }
+    
+    public void SetIndexToInactiveSpawner(Vector2Int cellIndex) {
+        mainMap.SetTile((Vector3Int) cellIndex, inactiveStartTile);
+    }
+    
+    public void SetIndexToFruitSpawner(Vector2Int cellIndex) {
         mainMap.SetTile((Vector3Int) cellIndex, fruitTile);
     }
 }

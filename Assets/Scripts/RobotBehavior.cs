@@ -208,7 +208,7 @@ public class RobotBehavior : MonoBehaviour {
             }
         }
 
-        if (currentTile == _gameManager.startTile)
+        if (currentTile == _gameManager.activeStartTile)
         {
             // returning to the start
             if (_isCarrying) {

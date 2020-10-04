@@ -26,13 +26,13 @@ public class FruitSpawner : MonoBehaviour
         _gameManager = FindObjectOfType<GameManager>();
         _renderer = GetComponentInChildren<SpriteRenderer>();
         _animator = GetComponentInChildren<Animator>();
+        FixToTileCenter();
     }
 
     public void Appear() {
         Debug.Log("fruit appear");
         _renderer.material.color = new Color(1,1,1,1);
         SetUnimportant();
-        FixToTileCenter();
         RespawnFruit();
         gameObject.SetActive(true);
     }
@@ -71,6 +71,6 @@ public class FruitSpawner : MonoBehaviour
     private void FixToTileCenter() {
         _cellIndex = _gameManager.GetCellIndexAtPosition(transform.position);
         transform.position = _gameManager.GetTileCenterPosition(_cellIndex);
-        _gameManager.SetIndexToSpawner(_cellIndex);
+        _gameManager.SetIndexToFruitSpawner(_cellIndex);
     }
 }
