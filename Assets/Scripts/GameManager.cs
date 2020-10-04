@@ -260,6 +260,15 @@ public class GameManager : MonoBehaviour {
                 robotButtons[i].interactable = false;
             }
         }
+
+        robotButtons[4].interactable = true;
+
+        if (fruits.Count == 1) {
+            buttonPanel.SetActive(false);
+        }
+        else {
+            buttonPanel.SetActive(true);
+        }
     }
 
     public void SelectNextRobot() {
@@ -466,7 +475,8 @@ public class GameManager : MonoBehaviour {
     }
 
     public void OnGhost5Select() {
-        ChangeToRobot(4);
+        SetControlledRobot(-1);
+        Resimulate(0, false);
     }
     public void SetIndexToActiveSpawner(Vector2Int cellIndex) {
          mainMap.SetTile((Vector3Int) cellIndex, activeStartTile);
