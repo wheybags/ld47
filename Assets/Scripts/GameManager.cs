@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Assertions;
+using UnityEngine.SceneManagement;
 using UnityEngine.Tilemaps;
 
 public enum TileType
@@ -349,6 +350,12 @@ public class GameManager : MonoBehaviour {
             int step = robot.OnUndo();
             Resimulate(step, true);
         }
+    }
+
+    void OnRestartLevel()
+    {
+        Scene scene = SceneManager.GetActiveScene();
+        SceneManager.LoadScene(scene.name);
     }
 
     public void SetIndexToActiveSpawner(Vector2Int cellIndex) {
