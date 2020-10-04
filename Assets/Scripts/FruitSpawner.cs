@@ -1,6 +1,5 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
-using UnityEditor.Animations;
 using UnityEngine;
 
 public class FruitSpawner : MonoBehaviour
@@ -10,8 +9,8 @@ public class FruitSpawner : MonoBehaviour
     private GameManager _gameManager;
     private SpriteRenderer _renderer;
     private Animator _animator;
-    public AnimatorController importantSprite;
-    public AnimatorController unimportantSprite;
+    public RuntimeAnimatorController importantSprite;
+    public RuntimeAnimatorController unimportantSprite;
     #endregion
     
     #region Members
