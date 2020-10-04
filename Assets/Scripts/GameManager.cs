@@ -76,7 +76,6 @@ public class GameManager : MonoBehaviour {
     
     void Update() {
         if (_activeRobot < 0 && Time.time > _nextAutoMove) {
-            Debug.Log("automove");
             _nextAutoMove += 0.5f;
             Resimulate(_tick + 1 );
         }
@@ -159,12 +158,16 @@ public class GameManager : MonoBehaviour {
         }
         SetControlledRobot(_activeRobot);
     }
-    
-    public void Resimulate(int steps) {
-        _tick = steps;
+
+    private void ResetSimulation() {
         foreach (var robot in robots) {
             robot.ResetSimulation();
         }
+    }
+    
+    public void Resimulate(int steps) {
+        ResetSimulation();
+        _tick = steps;
         
         GameObject[] fruits = GameObject.FindGameObjectsWithTag("Resource");
         foreach (var fruit in fruits) {
@@ -184,6 +187,7 @@ public class GameManager : MonoBehaviour {
                 break;
             }
         }
+        
     }
 
     public TileBase GetCellAtIndex(Vector2Int cellIndex)
@@ -233,6 +237,8 @@ public class GameManager : MonoBehaviour {
     public void RelinquishControl(RobotBehavior robot) {
         if (_activeRobot > -1 && robot == robots[_activeRobot]) {
             SetControlledRobot(-1);
+            _tick = -1;
+            _nextAutoMove = Time.time + 0.1f;
         }
     }
     

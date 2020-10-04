@@ -192,7 +192,9 @@ public class RobotBehavior : MonoBehaviour {
             if (_isCarrying) {
                 _harvestedFrom.RespawnFruit();
                 SetCarryEmpty();
-                _gameManager.RelinquishControl(this);
+                if (isControlled) {
+                    _gameManager.RelinquishControl(this);
+                }
             }
         }
     }
