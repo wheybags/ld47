@@ -12,6 +12,7 @@ public class RobotBehavior : MonoBehaviour {
     private SpriteRenderer _carriedItemRenderer;
     private Animator _animator;
     private SpriteRenderer _renderer;
+    private SpriteRenderer hilightRenderer;
     #endregion
 
     #region Members
@@ -57,8 +58,11 @@ public class RobotBehavior : MonoBehaviour {
         _gameManager = FindObjectOfType<GameManager>();
         _lastCommands = new List<Vector2Int>();
         cellIndex = _gameManager.GetCellIndexAtPosition(transform.position);
+        hilightRenderer = transform.Find("hilight").GetComponent<SpriteRenderer>();
         _spawnIndex = cellIndex;
         ResetSimulation();
+
+        hilightRenderer.material.color = new Color(0.4f, 0.2f, 0.2f, 1.0f) * 1.3f;
     }
 
     private void Update()
@@ -77,25 +81,29 @@ public class RobotBehavior : MonoBehaviour {
             _animator.speed = 0;
             _renderer.flipY = true;
             _carriedItemRenderer.flipY = true;
+            hilightRenderer.flipY = true;
         }
         if (!isBroken && _animator.speed <= 0)
         {
             _animator.speed = 1;
             _renderer.flipY = false;
             _carriedItemRenderer.flipY = false;
+            hilightRenderer.flipY = false;
         }
 
         if (lastMoveLeftRight == LRDirection.Left && !_renderer.flipX)
         {
             _renderer.flipX = true;
             _carriedItemRenderer.flipX = true;
+            hilightRenderer.flipX = true;
         }
         else if (lastMoveLeftRight == LRDirection.Right && _renderer.flipX)
         {
             _renderer.flipX = false;
             _carriedItemRenderer.flipX = false;
+            hilightRenderer.flipX = false;
         }
-        
+
         if (isControlled) {
             _renderer.material.color = new Color(1.3f, 1.3f, 0.5f, 1);
         }
