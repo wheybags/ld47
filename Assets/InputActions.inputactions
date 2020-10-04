@@ -68,6 +68,14 @@
                     "expectedControlType": "Button",
                     "processors": "",
                     "interactions": ""
+                },
+                {
+                    "name": "NextLevel",
+                    "type": "Button",
+                    "id": "60efee4f-41d1-4dff-9cd5-2bb268d7a967",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": ""
                 }
             ],
             "bindings": [
@@ -211,6 +219,17 @@
                     "processors": "",
                     "groups": "",
                     "action": "RestartLevel",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "09dc3410-e608-47b3-83e8-5a4daea3b433",
+                    "path": "<Keyboard>/#(N)",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "NextLevel",
                     "isComposite": false,
                     "isPartOfComposite": false
                 }

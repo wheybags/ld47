@@ -43,6 +43,7 @@ public class GameManager : MonoBehaviour {
     public GameObject robotPrefab;
 
     public Text energyGui;
+    public Text winText;
 
     public int maxMoves;
     #endregion
@@ -55,10 +56,15 @@ public class GameManager : MonoBehaviour {
     public int _tick;
     private int _nextSpawnTick = 0;
     private float _nextAutoMove;
+    private float autoDelay = 0.5f;
+
+    bool complete = false;
     #endregion
 
     void Start()
     {
+        winText.enabled = false;
+
         SetupShadowMap();
 
         robots = new List<RobotBehavior>();
@@ -111,14 +117,12 @@ public class GameManager : MonoBehaviour {
     }
     
     void Update() {
-
-        energyGui.text = "Energy: " + (maxMoves - _tick) + "/" + maxMoves;
+        energyGui.text = "Level " + GetCurrentLevelNumber() + "\nEnergy: " + (maxMoves - _tick) + "/" + maxMoves;
 
         if (_activeRobot < 0 && Time.time > _nextAutoMove) {
-            _nextAutoMove = Time.time + 0.5f;
+            _nextAutoMove = Time.time + autoDelay;
 
-
-            bool allFinished = true;
+            bool allFinished = robots.Count > 0;
             foreach (RobotBehavior robot in robots)
             {
                 if (!robot.isFinished)
@@ -126,6 +130,13 @@ public class GameManager : MonoBehaviour {
                     allFinished = false;
                     break;
                 }
+            }
+
+            if (allFinished)
+            {
+                autoDelay = Math.Max(autoDelay - 0.1f, 0.2f);
+                winText.enabled = true;
+                complete = true;
             }
 
             int newTick = _tick + 1;
@@ -380,6 +391,21 @@ public class GameManager : MonoBehaviour {
     {
         Scene scene = SceneManager.GetActiveScene();
         SceneManager.LoadScene(scene.name);
+    }
+
+    int GetCurrentLevelNumber()
+    {
+        Scene scene = SceneManager.GetActiveScene();
+        return int.Parse(scene.name.Replace("Level_", ""));
+    }
+
+    void OnNextLevel()
+    {
+        if (complete)
+        {
+            int number = GetCurrentLevelNumber() + 1;
+            SceneManager.LoadScene("Level_" + number.ToString("D2"));
+        }
     }
 
     public void SetIndexToActiveSpawner(Vector2Int cellIndex) {
