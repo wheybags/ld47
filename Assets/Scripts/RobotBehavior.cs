@@ -21,6 +21,7 @@ public class RobotBehavior : MonoBehaviour {
     public float lastMoveTime = 0;
 
     private Vector2Int _spawnIndex;
+    private int _spawnWaitTicks;
     private int _requiredFruitType;
     private bool _isCarrying;
     private FruitSpawner _harvestedFrom;
@@ -102,6 +103,10 @@ public class RobotBehavior : MonoBehaviour {
         }
     }
 
+    public void SetSpawnWait(int ticks) {
+        _spawnWaitTicks = ticks;
+    }
+    
     public void SetControlledState(bool state) {
         isControlled = state;
     }
@@ -150,7 +155,7 @@ public class RobotBehavior : MonoBehaviour {
                 {
                     //wall: add the movement to commands but make no movement
                     _lastCommands.Add(direction);
-                    _gameManager.Resimulate(_lastCommands.Count);
+                    _gameManager.Resimulate(_lastCommands.Count + _spawnWaitTicks);
                     break;
                 }
                 case TileType.Die:
@@ -165,7 +170,7 @@ public class RobotBehavior : MonoBehaviour {
                     //walkable: do the movement and add it to commands then run the simulation once
                     Move(direction);
                     _lastCommands.Add(direction);
-                    _gameManager.Resimulate(_lastCommands.Count);
+                    _gameManager.Resimulate(_lastCommands.Count  + _spawnWaitTicks);
                     break;
                 }
             }
@@ -230,14 +235,18 @@ public class RobotBehavior : MonoBehaviour {
         return false;
     }
 
-    public bool StepSimulation() {
-        if (_lastCommands.Count > 0) {
-            _commandIndex++;
-            if (_commandIndex == _lastCommands.Count) {
-                _commandIndex -= _lastCommands.Count;
+    public bool StepSimulation(int tick) {
+        if (tick > _spawnWaitTicks) {
+            if (_lastCommands.Count > 0) {
+                _commandIndex++;
+                if (_commandIndex == _lastCommands.Count) {
+                    _commandIndex -= _lastCommands.Count;
+                }
+
+                return SimulatedMove(_lastCommands[_commandIndex]);
             }
-            return SimulatedMove(_lastCommands[_commandIndex]);
         }
+
         return false;
 
     }
