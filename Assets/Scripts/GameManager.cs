@@ -91,7 +91,7 @@ public class GameManager : MonoBehaviour {
     void Update() {
         if (_activeRobot < 0 && Time.time > _nextAutoMove) {
             _nextAutoMove += 0.5f;
-            Resimulate(_tick + 1 );
+            Resimulate(_tick + 1, true );
         }
 
         if (robots.Count < _maxRobots && isCellBlockedByRobot(_startTileIndex) == false) {
@@ -197,6 +197,7 @@ public class GameManager : MonoBehaviour {
         foreach (var robot in robots) {
             robot.ResetSimulation();
         }
+        SetupFruits();
     }
 
     public void Resimulate(int steps, bool animate) {

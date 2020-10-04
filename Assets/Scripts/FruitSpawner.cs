@@ -1,5 +1,6 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using UnityEditor.Animations;
 using UnityEngine;
 
 public class FruitSpawner : MonoBehaviour
@@ -8,8 +9,9 @@ public class FruitSpawner : MonoBehaviour
 
     private GameManager _gameManager;
     private SpriteRenderer _renderer;
-    public Sprite importantSprite;
-    public Sprite unimportantSprite;
+    private Animator _animator;
+    public AnimatorController importantSprite;
+    public AnimatorController unimportantSprite;
     #endregion
     
     #region Members
@@ -23,29 +25,33 @@ public class FruitSpawner : MonoBehaviour
     void Start() {
         _gameManager = FindObjectOfType<GameManager>();
         _renderer = GetComponentInChildren<SpriteRenderer>();
-        Disappear();
+        _animator = GetComponentInChildren<Animator>();
     }
 
     public void Appear() {
         Debug.Log("fruit appear");
+        _renderer.material.color = new Color(1,1,1,1);
         SetUnimportant();
         FixToTileCenter();
         RespawnFruit();
+        gameObject.SetActive(true);
     }
     
     public void Disappear() {
         Debug.Log("fruit disappear");
         SetUnimportant();
-        //_renderer.sprite = null;
+        _animator.runtimeAnimatorController = unimportantSprite;
+        _renderer.material.color = Color.clear;
+        gameObject.SetActive(false);
     }
     
     public void SetImportant() {
         Debug.Log("fruit important");
-        //_renderer.sprite = importantSprite;
+        _animator.runtimeAnimatorController = importantSprite;
     }
 
     public void SetUnimportant() {
-        //_renderer.sprite = unimportantSprite;
+        _animator.runtimeAnimatorController = unimportantSprite;
     }
     
     public void RespawnFruit() {
@@ -56,7 +62,7 @@ public class FruitSpawner : MonoBehaviour
     public bool Harvest() {
         if (isStocked) {
             isStocked = false;
-            _renderer.color = Color.clear;
+            Disappear();
             return true;
         }
         return false;
