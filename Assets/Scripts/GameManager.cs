@@ -46,6 +46,9 @@ public class GameManager : MonoBehaviour {
     public List<Button> robotButtons;
     public GameObject robotPrefab;
 
+    public Sprite brownButtonSprite;
+    public Sprite whiteButtonSprite;
+
     public GameObject buttonPanel;
     
     public Text energyGui;
@@ -244,12 +247,12 @@ public class GameManager : MonoBehaviour {
         _activeRobot = robotIndex;
 
         foreach (var button in robotButtons) {
-            button.GetComponent<Image>().color = Color.white;
+            button.GetComponent<Image>().sprite = brownButtonSprite;
         }
         
         if (_activeRobot > -1) {
             spawns[_activeRobot].ActivateSpawner();
-            robotButtons[_activeRobot].GetComponent<Image>().color = Color.green;
+            robotButtons[_activeRobot].GetComponent<Image>().sprite = whiteButtonSprite;
         }
         
         for (var i = 0; i < robotButtons.Count; i++) {
