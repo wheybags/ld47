@@ -383,6 +383,11 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 1894986767745222425, guid: b17a02630b7435646bf30fe51d69fd8e,
+        type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 6641107913279758733, guid: b17a02630b7435646bf30fe51d69fd8e,
         type: 3}
       propertyPath: m_Name
@@ -493,6 +498,11 @@ PrefabInstance:
       propertyPath: spawns.Array.data[3]
       value: 
       objectReference: {fileID: 1900198317}
+    - target: {fileID: 6641107913279762034, guid: b17a02630b7435646bf30fe51d69fd8e,
+        type: 3}
+      propertyPath: maxMoves
+      value: 35
+      objectReference: {fileID: 0}
     - target: {fileID: 6641107914025261193, guid: b17a02630b7435646bf30fe51d69fd8e,
         type: 3}
       propertyPath: m_Tiles.Array.size
