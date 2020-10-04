@@ -178,7 +178,7 @@ public class GameManager : MonoBehaviour {
         var newRobot = GameObject.Instantiate(robotPrefab,
             mainMap.CellToWorld((Vector3Int) spawns[fruitType].cellIndex), Quaternion.identity);
         var behavior = newRobot.GetComponent<RobotBehavior>(); 
-        behavior.SetSpawnWait(robots.Count);
+        //behavior.SetSpawnWait(robots.Count);
         behavior.SetRequiredFruitType(fruitType);
         robots.Add(behavior);
     }
