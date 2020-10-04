@@ -6,6 +6,9 @@ using UnityEngine.Assertions;
 using UnityEngine.SceneManagement;
 using UnityEngine.Tilemaps;
 using UnityEngine.UI;
+using UnityEngine.UIElements;
+using Button = UnityEngine.UI.Button;
+using Image = UnityEngine.UI.Image;
 
 public enum TileType
 {
@@ -43,6 +46,8 @@ public class GameManager : MonoBehaviour {
     public List<Button> robotButtons;
     public GameObject robotPrefab;
 
+    public GameObject buttonPanel;
+    
     public Text energyGui;
     public Text winText;
 
@@ -138,6 +143,7 @@ public class GameManager : MonoBehaviour {
                 autoDelay = Math.Max(autoDelay - 0.1f, 0.2f);
                 winText.enabled = true;
                 complete = true;
+                buttonPanel.SetActive(false);
             }
 
             int newTick = _tick + 1;
@@ -433,7 +439,7 @@ public class GameManager : MonoBehaviour {
     }
 
     void ChangeToRobot(int robotIndex) {
-        if (robotIndex < _maxRobots) {
+        if (robotIndex < _maxRobots && complete == false) {
             Resimulate(0, false);
             robots[robotIndex].ClearCommands();
             SetControlledRobot(robotIndex);
