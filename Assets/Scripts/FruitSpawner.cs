@@ -30,7 +30,6 @@ public class FruitSpawner : MonoBehaviour
     }
 
     public void Appear() {
-        Debug.Log("fruit appear");
         _renderer.material.color = new Color(1,1,1,1);
         SetUnimportant();
         RespawnFruit();
@@ -38,7 +37,6 @@ public class FruitSpawner : MonoBehaviour
     }
     
     public void Disappear() {
-        Debug.Log("fruit disappear");
         SetUnimportant();
         _animator.runtimeAnimatorController = unimportantSprite;
         _renderer.material.color = Color.clear;
@@ -46,7 +44,6 @@ public class FruitSpawner : MonoBehaviour
     }
     
     public void SetImportant() {
-        Debug.Log("fruit important");
         _animator.runtimeAnimatorController = importantSprite;
     }
 

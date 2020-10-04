@@ -81,6 +81,10 @@ public class GameManager : MonoBehaviour {
             fruits[i].fruitType = i;
         }
         
+        for (var i = 0; i < spawns.Count; i++) {
+            spawns[i].fruitType = i;
+        }
+        
         // GameObject[] fruitGOs = GameObject.FindGameObjectsWithTag("Resource");
         //
         // foreach (var fruit in fruitGOs) {
@@ -177,8 +181,7 @@ public class GameManager : MonoBehaviour {
     private void SpawnRobot(int fruitType) {
         var newRobot = GameObject.Instantiate(robotPrefab,
             mainMap.CellToWorld((Vector3Int) spawns[fruitType].cellIndex), Quaternion.identity);
-        var behavior = newRobot.GetComponent<RobotBehavior>(); 
-        //behavior.SetSpawnWait(robots.Count);
+        var behavior = newRobot.GetComponent<RobotBehavior>();
         behavior.SetRequiredFruitType(fruitType);
         robots.Add(behavior);
     }

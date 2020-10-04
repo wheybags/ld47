@@ -17,6 +17,7 @@ public class RobotBehavior : MonoBehaviour {
     #region Members
     public bool isControlled = false;
     public bool isBroken;
+    public bool isFinished;
     public Vector2Int cellIndex { get; private set; }
     public Vector2Int previousCellIndex;
     public float lastMoveTime = 0;
@@ -121,13 +122,13 @@ public class RobotBehavior : MonoBehaviour {
 
     private void SetCarryEmpty() {
         _isCarrying = false;
-        _carriedItemRenderer.color = Color.clear;
+        _carriedItemRenderer.material.color = Color.clear;
     }
 
     private void SetCarryFull(FruitSpawner spawner) {
         _isCarrying = true;
         _harvestedFrom = spawner;
-        _carriedItemRenderer.color = Color.white;
+        _carriedItemRenderer.material.color = Color.white;
     }
     
     public void ResetSimulation() {
@@ -138,6 +139,7 @@ public class RobotBehavior : MonoBehaviour {
         SetCarryEmpty();
         _commandIndex = -1;
         isBroken = false;
+        isFinished = false;
         Move(Vector2Int.zero);
         lastMoveLeftRight = LRDirection.Right;
     }
@@ -197,7 +199,7 @@ public class RobotBehavior : MonoBehaviour {
         if (currentTile == _gameManager.fruitTile)
         {
             // landing on a fruit spawner
-            var collider = Physics2D.OverlapCircle(cellIndex, 0.5f, LayerMask.NameToLayer("Resource"));
+            var collider = Physics2D.OverlapCircle(cellIndex, 0.5f);
             if (collider)
             {
                 var spawner = collider.gameObject.GetComponent<FruitSpawner>();
@@ -208,14 +210,38 @@ public class RobotBehavior : MonoBehaviour {
             }
         }
 
-        if (currentTile == _gameManager.activeStartTile)
+        if (currentTile == _gameManager.activeStartTile || currentTile == _gameManager.inactiveStartTile)
         {
             // returning to the start
             if (_isCarrying) {
-                _harvestedFrom.RespawnFruit();
-                SetCarryEmpty();
-                if (isControlled) {
-                    _gameManager.RelinquishControl(this);
+                Debug.Log("is carrying and on start tile");
+                var collider = Physics2D.OverlapCircle(cellIndex, 0.5f);
+                if (collider) {
+                    Debug.Log("collider found");
+                    var spawner = collider.gameObject.GetComponent<GhostSpawn>();
+                    if (spawner && spawner.fruitType == _requiredFruitType) {
+                        Debug.Log("matching spawn found");
+                        _harvestedFrom.RespawnFruit();
+                        SetCarryEmpty();
+                        isFinished = true;
+                        if (isControlled) {
+                            _gameManager.RelinquishControl(this);
+                        }
+                    }
+                }
+            }
+        }
+        
+        if (currentTile == _gameManager.fruitTile)
+        {
+            // landing on a starting tile spawner
+            var collider = Physics2D.OverlapCircle(cellIndex, 0.5f, LayerMask.NameToLayer("Resource"));
+            if (collider)
+            {
+                var spawner = collider.gameObject.GetComponent<FruitSpawner>();
+                if (spawner && spawner.Harvest(_requiredFruitType))
+                {
+                    SetCarryFull(spawner);
                 }
             }
         }
@@ -246,7 +272,7 @@ public class RobotBehavior : MonoBehaviour {
     }
 
     public bool StepSimulation(int tick) {
-        if (tick > _spawnWaitTicks) {
+        if (tick > _spawnWaitTicks && isFinished == false) {
             if (_lastCommands.Count > 0) {
                 _commandIndex++;
                 if (_commandIndex == _lastCommands.Count) {
