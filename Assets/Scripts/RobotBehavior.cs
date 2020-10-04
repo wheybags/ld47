@@ -186,8 +186,6 @@ public class RobotBehavior : MonoBehaviour {
                 case TileType.Block: 
                 {
                     //wall: add the movement to commands but make no movement
-                    _lastCommands.Add(direction);
-                    _gameManager.Resimulate(_lastCommands.Count + _spawnWaitTicks, false);
                     break;
                 }
                 case TileType.Die:
