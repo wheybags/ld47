@@ -158,7 +158,7 @@ public class RobotBehavior : MonoBehaviour {
     }
     
     void TryMove(Vector2Int direction) {
-        if (isBroken == false && isControlled && lastMoveTime == -1) {
+        if (isBroken == false && isControlled && lastMoveTime == -1 && _gameManager._tick < _gameManager.maxMoves) {
             TileType targetTileType = _gameManager.GetCellTypeAtIndex(cellIndex + direction);
 
             switch (targetTileType)
