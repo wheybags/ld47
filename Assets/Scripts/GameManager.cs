@@ -172,14 +172,14 @@ public class GameManager : MonoBehaviour {
         }
     }
     
-    public bool isCellBlockedByRobot(Vector2Int cellIndex) {
+    public RobotBehavior isCellBlockedByRobot(Vector2Int cellIndex) {
         foreach (var robot in robots) {
             if (cellIndex == robot.cellIndex && robot.gameObject.activeInHierarchy) {
-                return true;
+                return robot;
             }
         }
 
-        return false;
+        return null;
     }
     
     private void SetupShadowMap()
