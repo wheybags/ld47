@@ -368,7 +368,10 @@ public class GameManager : MonoBehaviour {
     public void RelinquishControl(RobotBehavior robot) {
         if (_activeRobot > -1 && robot == robots[_activeRobot]) {
             SetControlledRobot(-1);
-            _maxRobots++;
+            if (_maxRobots < fruits.Count) {
+                _maxRobots++;
+            }
+
             _tick = -1;
             _nextAutoMove = Time.time + 0.1f;
             for (var i = 0; i < robotButtons.Count; i++) {
