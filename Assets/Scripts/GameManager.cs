@@ -94,7 +94,7 @@ public class GameManager : MonoBehaviour {
             Resimulate(_tick + 1, true );
         }
 
-        if (robots.Count < _maxRobots && isCellBlockedByRobot(_startTileIndex) == false) {
+        if (robots.Count < _maxRobots && isCellBlockedByRobot(_startTileIndex) == false && robots.Count < fruits.Count) {
             SpawnRobot(robots.Count);
             SetControlledRobot(robots.Count -1);
             SetupFruits();
