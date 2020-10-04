@@ -12,9 +12,9 @@ MonoBehaviour:
   m_Script: {fileID: 13312, guid: 0000000000000000e000000000000000, type: 0}
   m_Name: fruit-tile
   m_EditorClassIdentifier: 
-  m_Sprite: {fileID: 2279248500995412444, guid: 09a81326da6804c49ab97057569e50bb,
+  m_Sprite: {fileID: -2118097346088729430, guid: 09a81326da6804c49ab97057569e50bb,
     type: 3}
-  m_Color: {r: 1, g: 0.5235849, b: 0.5235849, a: 1}
+  m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_Transform:
     e00: 1
     e01: 0
