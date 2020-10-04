@@ -33,6 +33,7 @@ public class GameManager : MonoBehaviour {
     public TileBase shadowOuterCorner;
     
     public List<RobotBehavior> robots;
+    public List<FruitSpawner> fruits;
     public GameObject robotPrefab;
     #endregion
 
@@ -51,6 +52,8 @@ public class GameManager : MonoBehaviour {
         SetupShadowMap();
 
         robots = new List<RobotBehavior>();
+        fruits = new List<FruitSpawner>();
+        
         var robotGOs = GameObject.FindGameObjectsWithTag("Player");
         foreach (var robot in robotGOs) {
             var script = robot.GetComponent<RobotBehavior>();
@@ -70,10 +73,18 @@ public class GameManager : MonoBehaviour {
                 }
             }
         }
+        
+        GameObject[] fruitGOs = GameObject.FindGameObjectsWithTag("Resource");
+        
+        foreach (var fruit in fruitGOs) {
+            Debug.Log("added fruit");
+            var spawner = fruit.GetComponent<FruitSpawner>();
+            fruits.Add(spawner);
+        }
+        
         _nextSpawnTick = 0;
         _activeRobot = -1;
         _maxRobots = 1;
-
     }
     
     void Update() {
@@ -85,8 +96,28 @@ public class GameManager : MonoBehaviour {
         if (robots.Count < _maxRobots && isCellBlockedByRobot(_startTileIndex) == false) {
             SpawnRobot(robots.Count);
             SetControlledRobot(robots.Count -1);
+            SetupFruits();
+        }
+        
+
+    }
+
+    public void SetupFruits() {
+        foreach (var fruit in fruits) {
+            if (fruit) {
+                fruit.Disappear();
+            }
         }
 
+        for (var r = 0; r < robots.Count; r++) {
+            if (fruits[r]) {
+                fruits[r].Appear();
+            }
+        }
+
+        if (_activeRobot > -1) {
+            fruits[_activeRobot].SetImportant();
+        }
     }
     
     public bool isCellBlockedByRobot(Vector2Int cellIndex) {
@@ -171,9 +202,8 @@ public class GameManager : MonoBehaviour {
         ResetSimulation();
         _tick = steps;
         
-        GameObject[] fruits = GameObject.FindGameObjectsWithTag("Resource");
         foreach (var fruit in fruits) {
-            fruit.GetComponent<FruitSpawner>().RespawnFruit();
+            fruit.RespawnFruit();
         }
 
         bool stop = false;

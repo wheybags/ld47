@@ -8,6 +8,8 @@ public class FruitSpawner : MonoBehaviour
 
     private GameManager _gameManager;
     private SpriteRenderer _renderer;
+    public Sprite importantSprite;
+    public Sprite unimportantSprite;
     #endregion
     
     #region Members
@@ -21,19 +23,34 @@ public class FruitSpawner : MonoBehaviour
     void Start() {
         _gameManager = FindObjectOfType<GameManager>();
         _renderer = GetComponentInChildren<SpriteRenderer>();
+        Disappear();
+    }
+
+    public void Appear() {
+        Debug.Log("fruit appear");
+        SetUnimportant();
         FixToTileCenter();
         RespawnFruit();
     }
+    
+    public void Disappear() {
+        Debug.Log("fruit disappear");
+        SetUnimportant();
+        //_renderer.sprite = null;
+    }
+    
+    public void SetImportant() {
+        Debug.Log("fruit important");
+        //_renderer.sprite = importantSprite;
+    }
 
+    public void SetUnimportant() {
+        //_renderer.sprite = unimportantSprite;
+    }
+    
     public void RespawnFruit() {
         _renderer.color = Color.white;
         isStocked = true;
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
-        
     }
 
     public bool Harvest() {
