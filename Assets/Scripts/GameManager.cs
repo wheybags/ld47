@@ -14,6 +14,8 @@ public enum TileType
 
 public class GameManager : MonoBehaviour {
     #region References
+    public Camera mainCamera;
+
     public Tilemap mainMap;
     public Tilemap shadowMap;
 
@@ -74,6 +76,11 @@ public class GameManager : MonoBehaviour {
         _activeRobot = -1;
         _maxRobots = 1;
 
+        //Debug.DrawLine(new Vector3(0, 0, 0), bounds.min + new Vector3(1, 1), Color.green, 20, false);
+        //Debug.DrawLine(new Vector3(0, 0, 0), bounds.max - new Vector3(1, 1), Color.green, 20, false);
+
+        Vector2 centre = new Vector2(bounds.min.x + (bounds.max.x - bounds.min.x) / 2.0f, bounds.min.y + (bounds.max.y - bounds.min.y) / 2.0f);
+        mainCamera.transform.position = new Vector3(centre.x, centre.y, mainCamera.transform.position.z);
     }
     
     void Update() {
