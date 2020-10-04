@@ -96,7 +96,7 @@ public class RobotBehavior : MonoBehaviour {
         }
         
         if (isControlled) {
-            _renderer.material.color = new Color(1.3f, 1.3f, 1.0f, 1);
+            _renderer.material.color = new Color(1.3f, 1.3f, 0.5f, 1);
         }
         else {
             _renderer.material.color = Color.white;
