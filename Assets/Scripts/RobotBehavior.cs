@@ -135,14 +135,16 @@ public class RobotBehavior : MonoBehaviour {
     }
 
     void Move(Vector2Int direction) {
-        previousCellIndex = cellIndex;
-        cellIndex += direction;
-        lastMoveTime = Time.time;
+        if (_gameManager.isCellBlockedByRobot(cellIndex + direction) == false) {
+            previousCellIndex = cellIndex;
+            cellIndex += direction;
+            lastMoveTime = Time.time;
 
-        if (direction.x > 0)
-            lastMoveLeftRight = LRDirection.Right;
-        else if (direction.x < 0)
-            lastMoveLeftRight = LRDirection.Left;
+            if (direction.x > 0)
+                lastMoveLeftRight = LRDirection.Right;
+            else if (direction.x < 0)
+                lastMoveLeftRight = LRDirection.Left;
+        }
     }
     
     void TryMove(Vector2Int direction) {
