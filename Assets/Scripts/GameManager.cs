@@ -54,8 +54,7 @@ public class GameManager : MonoBehaviour {
         SetupShadowMap();
 
         robots = new List<RobotBehavior>();
-        fruits = new List<FruitSpawner>();
-        
+
         var robotGOs = GameObject.FindGameObjectsWithTag("Player");
         foreach (var robot in robotGOs) {
             var script = robot.GetComponent<RobotBehavior>();
@@ -76,13 +75,13 @@ public class GameManager : MonoBehaviour {
             }
         }
         
-        GameObject[] fruitGOs = GameObject.FindGameObjectsWithTag("Resource");
-        
-        foreach (var fruit in fruitGOs) {
-            Debug.Log("added fruit");
-            var spawner = fruit.GetComponent<FruitSpawner>();
-            fruits.Add(spawner);
-        }
+        // GameObject[] fruitGOs = GameObject.FindGameObjectsWithTag("Resource");
+        //
+        // foreach (var fruit in fruitGOs) {
+        //     Debug.Log("added fruit");
+        //     var spawner = fruit.GetComponent<FruitSpawner>();
+        //     fruits.Add(spawner);
+        // }
         
         _nextSpawnTick = 0;
         _activeRobot = -1;
@@ -106,8 +105,6 @@ public class GameManager : MonoBehaviour {
             SetControlledRobot(robots.Count -1);
             SetupFruits();
         }
-        
-
     }
 
     public void SetupFruits() {

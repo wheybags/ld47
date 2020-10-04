@@ -59,8 +59,8 @@ public class FruitSpawner : MonoBehaviour
         isStocked = true;
     }
 
-    public bool Harvest() {
-        if (isStocked) {
+    public bool Harvest(int harvesterType) {
+        if (isStocked && harvesterType == fruitType) {
             isStocked = false;
             Disappear();
             return true;

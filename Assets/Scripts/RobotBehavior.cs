@@ -201,7 +201,7 @@ public class RobotBehavior : MonoBehaviour {
             if (collider)
             {
                 var spawner = collider.gameObject.GetComponent<FruitSpawner>();
-                if (spawner && spawner.Harvest())
+                if (spawner && spawner.Harvest(_requiredFruitType))
                 {
                     SetCarryFull(spawner);
                 }
