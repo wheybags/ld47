@@ -40,6 +40,7 @@ public class GameManager : MonoBehaviour {
     private int _activeRobot;
     private Vector2Int _startTileIndex;
     private int _waitSteps = 0;
+    private int _maxRobots = 0;
     private int _tick;
     private int _nextSpawnTick = 0;
     private float _nextAutoMove;
@@ -71,6 +72,7 @@ public class GameManager : MonoBehaviour {
         }
         _nextSpawnTick = 0;
         _activeRobot = -1;
+        _maxRobots = 1;
 
     }
     
@@ -80,10 +82,9 @@ public class GameManager : MonoBehaviour {
             Resimulate(_tick + 1 );
         }
 
-        if (_tick >= _nextSpawnTick && isCellBlockedByRobot(_startTileIndex) == false) {
-            SpawnRobot(0);
-            SetControlledRobot(0);
-            _nextSpawnTick += 10000;
+        if (robots.Count < _maxRobots && isCellBlockedByRobot(_startTileIndex) == false) {
+            SpawnRobot(robots.Count);
+            SetControlledRobot(robots.Count -1);
         }
 
     }
@@ -135,6 +136,7 @@ public class GameManager : MonoBehaviour {
         var newRobot = GameObject.Instantiate(robotPrefab,
             mainMap.CellToWorld((Vector3Int) _startTileIndex), Quaternion.identity);
         var behavior = newRobot.GetComponent<RobotBehavior>(); 
+        behavior.SetSpawnWait(robots.Count);
         behavior.SetRequiredFruitType(fruitType);
         robots.Add(behavior);
     }
@@ -177,7 +179,7 @@ public class GameManager : MonoBehaviour {
         bool stop = false;
         for (var s = 0; s < steps; s++) {
             foreach (var robot in robots) {
-                bool thisBotStop = robot.StepSimulation();
+                bool thisBotStop = robot.StepSimulation(s+1);
                 if (thisBotStop) {
                     stop = true;
                 }
@@ -237,6 +239,7 @@ public class GameManager : MonoBehaviour {
     public void RelinquishControl(RobotBehavior robot) {
         if (_activeRobot > -1 && robot == robots[_activeRobot]) {
             SetControlledRobot(-1);
+            _maxRobots++;
             _tick = -1;
             _nextAutoMove = Time.time + 0.1f;
         }
