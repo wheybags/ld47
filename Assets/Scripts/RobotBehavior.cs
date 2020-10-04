@@ -16,8 +16,8 @@ public class RobotBehavior : MonoBehaviour {
     public bool isControlled = false;
     public bool isBroken;
     public Vector2Int cellIndex { get; private set; }
-    private Vector2Int _previousCellIndex;
-    private float _lastMoveTime = 0;
+    public Vector2Int previousCellIndex;
+    public float lastMoveTime = 0;
 
     private Vector2Int _spawnIndex;
     private int _requiredFruitType;
@@ -25,7 +25,6 @@ public class RobotBehavior : MonoBehaviour {
     private FruitSpawner _harvestedFrom;
     [SerializeField] private List<Vector2Int> _lastCommands;
     private int _commandIndex;
-    private int spawnTick;
 
     enum LRDirection
     {
@@ -59,19 +58,19 @@ public class RobotBehavior : MonoBehaviour {
 
     private void Update()
     {
-        if (_lastMoveTime != -1)
+        if (lastMoveTime != -1)
         {
             const float movementTimeInSeconds = 0.1f;
 
-            float timeSinceMove = Time.time - _lastMoveTime;
+            float timeSinceMove = Time.time - lastMoveTime;
             float alpha = timeSinceMove * 1 / movementTimeInSeconds;
 
-            transform.position = Vector3.Lerp(_gameManager.GetTileCenterPosition(_previousCellIndex), _gameManager.GetTileCenterPosition(cellIndex), alpha);
+            transform.position = Vector3.Lerp(_gameManager.GetTileCenterPosition(previousCellIndex), _gameManager.GetTileCenterPosition(cellIndex), alpha);
 
             if (alpha >= 1)
             {
                 ApplyTileEffects();
-                _lastMoveTime = -1;
+                lastMoveTime = -1;
             }
         }
 
@@ -111,10 +110,10 @@ public class RobotBehavior : MonoBehaviour {
     }
     
     public void ResetSimulation() {
-        cellIndex = _spawnIndex;
         transform.position = _gameManager.GetTileCenterPosition(_spawnIndex);
-        _previousCellIndex = _spawnIndex;
-        _lastMoveTime = -1;
+        cellIndex = _spawnIndex;
+        previousCellIndex = _spawnIndex;
+        lastMoveTime = -1;
         SetCarryEmpty();
         _commandIndex = -1;
         isBroken = false;
@@ -123,24 +122,19 @@ public class RobotBehavior : MonoBehaviour {
     }
 
     void Move(Vector2Int direction) {
-        if (_gameManager.isCellBlockedByRobot(cellIndex + direction) == false) {
-            _previousCellIndex = cellIndex;
-            transform.position = _gameManager.GetTileCenterPosition(cellIndex + direction);
-            cellIndex += direction;
-            _lastMoveTime = Time.time;
+        previousCellIndex = cellIndex;
+        cellIndex += direction;
+        lastMoveTime = Time.time;
 
-            if (direction.x > 0) {
-                lastMoveLeftRight = LRDirection.Right;
-            }
-        }
-        else if (direction.x < 0) {
+        if (direction.x > 0)
+            lastMoveLeftRight = LRDirection.Right;
+        else if (direction.x < 0)
             lastMoveLeftRight = LRDirection.Left;
-        }
     }
     
     void TryMove(Vector2Int direction) {
-        
-        if (isBroken == false && isControlled && _lastMoveTime == -1) {
+        Debug.Log("uprobot");
+        if (isBroken == false && isControlled && lastMoveTime == -1) {
             TileType targetTileType = _gameManager.GetCellTypeAtIndex(cellIndex + direction);
 
             switch (targetTileType)
@@ -181,7 +175,7 @@ public class RobotBehavior : MonoBehaviour {
         if (currentTile == _gameManager.fruitTile)
         {
             // landing on a fruit spawner
-            var collider = Physics2D.OverlapCircle(new Vector3(transform.position.x,transform.position.y,0), 0.5f, LayerMask.NameToLayer("Resource"));
+            var collider = Physics2D.OverlapCircle(cellIndex, 0.5f, LayerMask.NameToLayer("Resource"));
             if (collider)
             {
                 var spawner = collider.gameObject.GetComponent<FruitSpawner>();
@@ -199,7 +193,6 @@ public class RobotBehavior : MonoBehaviour {
             if (_isCarrying) {
                 _harvestedFrom.RespawnFruit();
                 SetCarryEmpty();
-                _gameManager.RelinquishControl(this);
             }
         }
     }
