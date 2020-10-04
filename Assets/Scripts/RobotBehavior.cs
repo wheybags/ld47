@@ -272,11 +272,13 @@ public class RobotBehavior : MonoBehaviour {
         if (tick > _spawnWaitTicks && isFinished == false) {
             if (_lastCommands.Count > 0) {
                 _commandIndex++;
-                if (_commandIndex == _lastCommands.Count) {
-                    _commandIndex -= _lastCommands.Count;
-                }
 
-                return SimulatedMove(_lastCommands[_commandIndex]);
+                if (_lastCommands.Count > _commandIndex) {
+                    return SimulatedMove(_lastCommands[_commandIndex]);
+                }
+                else {
+                    isFinished = true;
+                }
             }
         }
 
