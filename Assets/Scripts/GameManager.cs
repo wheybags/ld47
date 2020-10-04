@@ -234,10 +234,25 @@ public class GameManager : MonoBehaviour {
         foreach (var spawn in spawns) {
             spawn.DeactivateSpawner();
         }
-        
+
         _activeRobot = robotIndex;
+
+        foreach (var button in robotButtons) {
+            button.GetComponent<Image>().color = Color.white;
+        }
+        
         if (_activeRobot > -1) {
             spawns[_activeRobot].ActivateSpawner();
+            robotButtons[_activeRobot].GetComponent<Image>().color = Color.green;
+        }
+        
+        for (var i = 0; i < robotButtons.Count; i++) {
+            if (i < _maxRobots) {
+                robotButtons[i].interactable = true;
+            }
+            else {
+                robotButtons[i].interactable = false;
+            }
         }
     }
 
@@ -350,6 +365,14 @@ public class GameManager : MonoBehaviour {
             _maxRobots++;
             _tick = -1;
             _nextAutoMove = Time.time + 0.1f;
+            for (var i = 0; i < robotButtons.Count; i++) {
+                if (i < _maxRobots) {
+                    robotButtons[i].interactable = true;
+                }
+                else {
+                    robotButtons[i].interactable = false;
+                }
+            }
         }
     }
     
@@ -417,22 +440,25 @@ public class GameManager : MonoBehaviour {
         }
     }
     
-    void OnGhost1Select() {
+    public void OnGhost1Select() {
         ChangeToRobot(0);
     }
     
-    void OnGhost2Select() {
+    public void OnGhost2Select() {
         ChangeToRobot(1);
     }
     
-    void OnGhost3Select() {
+    public void OnGhost3Select() {
         ChangeToRobot(2);
     }
     
-    void OnGhost4Select() {
+    public void OnGhost4Select() {
         ChangeToRobot(3);
     }
 
+    public void OnGhost5Select() {
+        ChangeToRobot(4);
+    }
     public void SetIndexToActiveSpawner(Vector2Int cellIndex) {
          mainMap.SetTile((Vector3Int) cellIndex, activeStartTile);
      }
