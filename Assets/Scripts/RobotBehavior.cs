@@ -141,7 +141,6 @@ public class RobotBehavior : MonoBehaviour {
     }
     
     void TryMove(Vector2Int direction) {
-        Debug.Log("uprobot");
         if (isBroken == false && isControlled && lastMoveTime == -1) {
             TileType targetTileType = _gameManager.GetCellTypeAtIndex(cellIndex + direction);
 
