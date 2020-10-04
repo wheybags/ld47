@@ -128,17 +128,17 @@ public class GameManager : MonoBehaviour {
         if (_activeRobot < 0 && Time.time > _nextAutoMove) {
             _nextAutoMove = Time.time + autoDelay;
 
-            bool allFinished = robots.Count > 0;
+            bool allDelivered = robots.Count > 0;
             foreach (RobotBehavior robot in robots)
             {
-                if (!robot.isFinished)
+                if (!robot.hasDelivered)
                 {
-                    allFinished = false;
+                    allDelivered = false;
                     break;
                 }
             }
 
-            if (allFinished)
+            if (allDelivered)
             {
                 autoDelay = Math.Max(autoDelay - 0.1f, 0.2f);
                 winText.enabled = true;
@@ -147,7 +147,7 @@ public class GameManager : MonoBehaviour {
             }
 
             int newTick = _tick + 1;
-            if (newTick > maxMoves || allFinished)
+            if (newTick > maxMoves || allDelivered)
                 newTick = 0;
 
             Resimulate(newTick, true );

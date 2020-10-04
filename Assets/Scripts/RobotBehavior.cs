@@ -18,6 +18,7 @@ public class RobotBehavior : MonoBehaviour {
     public bool isControlled = false;
     public bool isBroken;
     public bool isFinished;
+    public bool hasDelivered;
     public Vector2Int cellIndex { get; private set; }
     public Vector2Int previousCellIndex;
     public float lastMoveTime = 0;
@@ -150,6 +151,7 @@ public class RobotBehavior : MonoBehaviour {
         _commandIndex = -1;
         isBroken = false;
         isFinished = false;
+        hasDelivered = false;
         Move(Vector2Int.zero);
         lastMoveLeftRight = LRDirection.Right;
     }
@@ -240,6 +242,7 @@ public class RobotBehavior : MonoBehaviour {
                         _harvestedFrom.RespawnFruit();
                         SetCarryEmpty();
                         isFinished = true;
+                        hasDelivered = true;
                         if (isControlled) {
                             _gameManager.RelinquishControl(this);
                         }
