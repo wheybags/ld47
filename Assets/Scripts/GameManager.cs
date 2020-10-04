@@ -161,6 +161,7 @@ public class GameManager : MonoBehaviour {
     }
     
     public void Resimulate(int steps) {
+        _tick = steps;
         foreach (var robot in robots) {
             robot.ResetSimulation();
         }
@@ -229,27 +230,34 @@ public class GameManager : MonoBehaviour {
         return mainMap.GetCellCenterWorld(new Vector3Int(cellIndex.x,cellIndex.y,0));
     }
     
+    public void RelinquishControl(RobotBehavior robot) {
+        if (_activeRobot > -1 && robot == robots[_activeRobot]) {
+            SetControlledRobot(-1);
+        }
+    }
+    
     public void OnMoveUp() {
-        Debug.Log("up" + robots.Count.ToString());
-        robots[_activeRobot].OnMoveUp();
+        if (_activeRobot > -1) {
+            robots[_activeRobot].OnMoveUp();
+        }
     }
 
     public void OnMoveDown() {
-        robots[_activeRobot].OnMoveDown();
+        if (_activeRobot > -1) {
+            robots[_activeRobot].OnMoveDown();
+        }
     }
 
     public void OnMoveLeft() {
-        robots[_activeRobot].OnMoveLeft();
+        if (_activeRobot > -1) {
+            robots[_activeRobot].OnMoveLeft();
+        }
     }
 
     public void OnMoveRight() {
-        robots[_activeRobot].OnMoveRight();
-    }
-    
-    void OnChangeRobot() {
-        robots[_activeRobot].SetControlledState(false);
-        SpawnRobot(_activeRobot+1);
-        SelectNextRobot();
+        if (_activeRobot > -1) {
+            robots[_activeRobot].OnMoveRight();
+        }
     }
 
     void OnUndo() {
