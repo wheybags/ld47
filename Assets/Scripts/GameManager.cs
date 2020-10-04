@@ -69,9 +69,8 @@ public class GameManager : MonoBehaviour {
                 }
             }
         }
-        SpawnRobot(0);
-        _activeRobot = 0;
-        SetControlledRobot(_activeRobot);
+        _nextSpawnTick = 0;
+        _activeRobot = -1;
 
     }
     
@@ -89,7 +88,17 @@ public class GameManager : MonoBehaviour {
         }
 
     }
+    
+    public bool isCellBlockedByRobot(Vector2Int cellIndex) {
+        foreach (var robot in robots) {
+            if (cellIndex == robot.cellIndex && robot.gameObject.activeInHierarchy) {
+                return true;
+            }
+        }
 
+        return false;
+    }
+    
     private void SetupShadowMap()
     {
         Func<int, int, TileBase> get = (int x, int y) =>
