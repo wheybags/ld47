@@ -250,9 +250,10 @@ public class GameManager : MonoBehaviour {
             }
         }
 
-        if (animate)
+
+        for (int i = 0; i < robots.Count; i++)
         {
-            for (int i = 0; i < robots.Count; i++)
+            if (animate || robots[i].isFinished)
             {
                 robots[i].previousCellIndex = lastPositions[i];
                 robots[i].lastMoveTime = Time.time;
