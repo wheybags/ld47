@@ -74,6 +74,10 @@ public class GameManager : MonoBehaviour {
                 }
             }
         }
+
+        for (var i = 0; i < fruits.Count; i++) {
+            fruits[i].fruitType = i;
+        }
         
         // GameObject[] fruitGOs = GameObject.FindGameObjectsWithTag("Resource");
         //
