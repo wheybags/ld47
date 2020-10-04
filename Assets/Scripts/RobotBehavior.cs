@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Tilemaps;
@@ -37,7 +38,7 @@ public class RobotBehavior : MonoBehaviour {
 
     #endregion
 
-    Color[] tints =
+    private Color[] tints =
     {
         new Color(1.5f, 0.3f, 0.3f, 1),
         new Color(0.0f, 1.5f, 0.5f, 1),
@@ -45,15 +46,16 @@ public class RobotBehavior : MonoBehaviour {
         new Color(2.0f, 2.0f, 1.0f, 1),
         new Color(1.7f, 1.0f, 1.0f, 1),
     };
-    
-    void Start() {
+
+    private void Awake() {
         _animator = GetComponent<Animator>();
         _renderer = GetComponent<SpriteRenderer>();
+    }
+
+    void Start() {
         _carriedItemGO = transform.Find("CarriedItem").gameObject;
         _carriedItemRenderer = _carriedItemGO.GetComponent<SpriteRenderer>();
-
         _gameManager = FindObjectOfType<GameManager>();
-        _renderer.material.color = tints[Random.Range(0, tints.Length)];
         _lastCommands = new List<Vector2Int>();
         cellIndex = _gameManager.GetCellIndexAtPosition(transform.position);
         _spawnIndex = cellIndex;
@@ -111,6 +113,12 @@ public class RobotBehavior : MonoBehaviour {
     
     public void SetControlledState(bool state) {
         isControlled = state;
+        if (isControlled) {
+            _renderer.material.color = new Color(2.0f, 2.0f, 1.0f, 1);
+        }
+        else {
+            _renderer.material.color = Color.white;
+        }
     }
 
     private void SetCarryEmpty() {
