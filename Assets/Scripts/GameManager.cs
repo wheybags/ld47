@@ -117,7 +117,7 @@ public class GameManager : MonoBehaviour {
                     shadowMap.SetTile(new Vector3Int(x, y, 0), shadowTriangle);
                 else if (GetTileType(get(x - 1, y)) == TileType.Block && GetTileType(get(x, y + 1)) == TileType.Block && GetTileType(get(x, y)) == TileType.Floor)
                     shadowMap.SetTile(new Vector3Int(x, y, 0), shadowTL);
-                else if (get(x, y + 1) == wallSide)
+                else if (get(x, y + 1) == wallSide && GetTileType(get(x, y)) == TileType.Floor)
                     shadowMap.SetTile(new Vector3Int(x, y, 0), shadowT);
                 else if (GetTileType(get(x - 1, y)) == TileType.Block && GetTileType(get(x, y)) == TileType.Floor)
                     shadowMap.SetTile(new Vector3Int(x, y, 0), shadowL);
