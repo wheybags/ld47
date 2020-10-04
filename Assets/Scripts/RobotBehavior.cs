@@ -15,9 +15,9 @@ public class RobotBehavior : MonoBehaviour {
     #region Members
     public bool isControlled = false;
     public bool isBroken;
-    private Vector2Int _cellIndex;
-    private Vector2Int _previousCellIndex;
-    private float _lastMoveTime = 0;
+    public Vector2Int _cellIndex;
+    public Vector2Int _previousCellIndex;
+    public float _lastMoveTime = 0;
 
     private Vector2Int _spawnIndex;
     private int _requiredFruitType;

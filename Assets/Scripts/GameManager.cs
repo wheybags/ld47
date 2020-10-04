@@ -224,18 +224,17 @@ public class GameManager : MonoBehaviour {
     }
 
     void OnUndo() {
-        int step = robots[_activeRobot].OnUndo();
+        RobotBehavior robot = robots[_activeRobot];
+
+        Vector2Int lastPosition = robot._cellIndex;
+
+        int step = robot.OnUndo();
         Resimulate(step);
+
+        robot._previousCellIndex = lastPosition;
+        robot._lastMoveTime = Time.time;
     }
     
-    public void OnWait() {
-        _waitSteps++;
-        int step = robots[_activeRobot].OnUndo();
-        robots[_activeRobot].isControlled = false;
-        Resimulate(step+_waitSteps);
-        robots[_activeRobot].isControlled = true;
-    }
-
     public void SetIndexToSpawner(Vector2Int cellIndex) {
         mainMap.SetTile((Vector3Int) cellIndex, fruitTile);
     }
