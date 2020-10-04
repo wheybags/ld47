@@ -62,7 +62,7 @@ public class RobotBehavior : MonoBehaviour {
 
     private void Update()
     {
-        Debug.DrawLine(new Vector3(0, 0, 0), _gameManager.GetTileCenterPosition(cellIndex), Color.red, 1f, false);
+        //Debug.DrawLine(new Vector3(0, 0, 0), _gameManager.GetTileCenterPosition(cellIndex), Color.red, 1f, false);
 
         //if (transform.position == _gameManager.GetTileCenterPosition(_spawnIndex) && _gameManager._tick != 0)
         //{
@@ -154,17 +154,25 @@ public class RobotBehavior : MonoBehaviour {
         lastMoveLeftRight = LRDirection.Right;
     }
 
-    void Move(Vector2Int direction) {
-        if (_gameManager.isCellBlockedByRobot(cellIndex + direction) == false) {
-            previousCellIndex = cellIndex;
-            cellIndex += direction;
-            lastMoveTime = Time.time;
+    bool Move(Vector2Int direction) {
+        if (direction.x > 0)
+            lastMoveLeftRight = LRDirection.Right;
+        else if (direction.x < 0)
+            lastMoveLeftRight = LRDirection.Left;
 
-            if (direction.x > 0)
-                lastMoveLeftRight = LRDirection.Right;
-            else if (direction.x < 0)
-                lastMoveLeftRight = LRDirection.Left;
+        RobotBehavior otherRobot = _gameManager.isCellBlockedByRobot(cellIndex + direction);
+        if (otherRobot && otherRobot != this)
+        {
+            isBroken = true;
+            otherRobot.isBroken = true;
+            return false;
         }
+
+        previousCellIndex = cellIndex;
+        cellIndex += direction;
+        lastMoveTime = Time.time;
+
+        return true;
     }
     
     void TryMove(Vector2Int direction) {
@@ -190,9 +198,10 @@ public class RobotBehavior : MonoBehaviour {
                 case TileType.Floor:
                 {
                     //walkable: do the movement and add it to commands then run the simulation once
-                    Move(direction);
+                    bool alive = Move(direction);
                     _lastCommands.Add(direction);
-                    _gameManager.Resimulate(_lastCommands.Count  + _spawnWaitTicks, false);
+                    if (alive)
+                        _gameManager.Resimulate(_lastCommands.Count  + _spawnWaitTicks, false);
                     break;
                 }
             }
