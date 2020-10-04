@@ -40,6 +40,9 @@ public class GameManager : MonoBehaviour {
     private int _activeRobot;
     private Vector2Int _startTileIndex;
     private int _waitSteps = 0;
+    private int _tick;
+    private int _nextSpawnTick = 0;
+    private float _nextAutoMove;
     #endregion
 
     void Start()
@@ -66,12 +69,36 @@ public class GameManager : MonoBehaviour {
                 }
             }
         }
-        SpawnRobot(0);
-        _activeRobot = 0;
-        SetControlledRobot(_activeRobot);
+        _nextSpawnTick = 0;
+        _activeRobot = -1;
 
     }
+    
+    void Update() {
+        if (_activeRobot < 0 && Time.time > _nextAutoMove) {
+            Debug.Log("automove");
+            _nextAutoMove += 0.5f;
+            Resimulate(_tick + 1 );
+        }
 
+        if (_tick >= _nextSpawnTick && isCellBlockedByRobot(_startTileIndex) == false) {
+            SpawnRobot(0);
+            SetControlledRobot(0);
+            _nextSpawnTick += 10000;
+        }
+
+    }
+    
+    public bool isCellBlockedByRobot(Vector2Int cellIndex) {
+        foreach (var robot in robots) {
+            if (cellIndex == robot.cellIndex && robot.gameObject.activeInHierarchy) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+    
     private void SetupShadowMap()
     {
         Func<int, int, TileBase> get = (int x, int y) =>
@@ -114,12 +141,14 @@ public class GameManager : MonoBehaviour {
     }
 
     public void SetControlledRobot(int robotIndex) {
-        if (robots[robotIndex]) {
-            foreach (var robot in robots) {
-                robot.SetControlledState(false);
-            }
+        foreach (var robot in robots) {
+            robot.SetControlledState(false);
+        }
+        if (robotIndex > -1 && robots[robotIndex]) {
             robots[robotIndex].SetControlledState(true);
         }
+
+        _activeRobot = robotIndex;
     }
 
     public void SelectNextRobot() {
@@ -132,6 +161,7 @@ public class GameManager : MonoBehaviour {
     }
     
     public void Resimulate(int steps) {
+        _tick = steps;
         foreach (var robot in robots) {
             robot.ResetSimulation();
         }
@@ -200,27 +230,34 @@ public class GameManager : MonoBehaviour {
         return mainMap.GetCellCenterWorld(new Vector3Int(cellIndex.x,cellIndex.y,0));
     }
     
+    public void RelinquishControl(RobotBehavior robot) {
+        if (_activeRobot > -1 && robot == robots[_activeRobot]) {
+            SetControlledRobot(-1);
+        }
+    }
+    
     public void OnMoveUp() {
-        Debug.Log("up" + robots.Count.ToString());
-        robots[_activeRobot].OnMoveUp();
+        if (_activeRobot > -1) {
+            robots[_activeRobot].OnMoveUp();
+        }
     }
 
     public void OnMoveDown() {
-        robots[_activeRobot].OnMoveDown();
+        if (_activeRobot > -1) {
+            robots[_activeRobot].OnMoveDown();
+        }
     }
 
     public void OnMoveLeft() {
-        robots[_activeRobot].OnMoveLeft();
+        if (_activeRobot > -1) {
+            robots[_activeRobot].OnMoveLeft();
+        }
     }
 
     public void OnMoveRight() {
-        robots[_activeRobot].OnMoveRight();
-    }
-    
-    void OnChangeRobot() {
-        robots[_activeRobot].SetControlledState(false);
-        SpawnRobot(_activeRobot+1);
-        SelectNextRobot();
+        if (_activeRobot > -1) {
+            robots[_activeRobot].OnMoveRight();
+        }
     }
 
     void OnUndo() {
