@@ -8,6 +8,8 @@ public class RobotBehavior : MonoBehaviour {
     #region References
     private GameManager _gameManager;
     private GameObject _carriedItemGO;
+    private Animator _animator;
+    private SpriteRenderer _renderer;
     #endregion
 
     #region Members
@@ -40,9 +42,11 @@ public class RobotBehavior : MonoBehaviour {
     };
     
     void Start() {
+        _animator = GetComponent<Animator>();
+        _renderer = GetComponent<SpriteRenderer>();
         _carriedItemGO = transform.Find("CarriedItem").gameObject;
         _gameManager = FindObjectOfType<GameManager>();
-        GetComponent<SpriteRenderer>().material.color = tints[Random.Range(0, tints.Length)];
+        _renderer.material.color = tints[Random.Range(0, tints.Length)];
         _lastCommands = new List<Vector2Int>();
         _cellIndex = _gameManager.GetCellIndexAtPosition(transform.position);
         _spawnIndex = _cellIndex;
@@ -51,21 +55,21 @@ public class RobotBehavior : MonoBehaviour {
 
     private void Update()
     {
-        if (isBroken && GetComponent<Animator>().speed > 0)
+        if (isBroken && _animator.speed > 0)
         {
-            GetComponent<Animator>().speed = 0;
-            GetComponent<SpriteRenderer>().flipY = true;
+            _animator.speed = 0;
+            _renderer.flipY = true;
         }
-        if (!isBroken && GetComponent<Animator>().speed <= 0)
+        if (!isBroken && _animator.speed <= 0)
         {
-            GetComponent<Animator>().speed = 1;
-            GetComponent<SpriteRenderer>().flipY = false;
+            _animator.speed = 1;
+            _renderer.flipY = false;
         }
 
-        if (lastMoveLeftRight == LRDirection.Left && !GetComponent<SpriteRenderer>().flipX)
-            GetComponent<SpriteRenderer>().flipX = true;
-        else if (lastMoveLeftRight == LRDirection.Right && GetComponent<SpriteRenderer>().flipX)
-            GetComponent<SpriteRenderer>().flipX = false;
+        if (lastMoveLeftRight == LRDirection.Left && !_renderer.flipX)
+            _renderer.flipX = true;
+        else if (lastMoveLeftRight == LRDirection.Right && _renderer.flipX)
+            _renderer.flipX = false;
     }
 
     public void SetControlledState(bool state) {
