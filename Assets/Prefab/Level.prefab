@@ -48,6 +48,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 678be350039867b4a959b7b47d2a2710, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  mainCamera: {fileID: 4859784682918191123}
   mainMap: {fileID: 6641107914025261193}
   shadowMap: {fileID: 8010494301804471622}
   wallTopNormal: {fileID: 11400000, guid: 6ae20f5d638c4aa448010dceb2445922, type: 2}
@@ -64,6 +65,7 @@ MonoBehaviour:
   shadowTriangle: {fileID: 11400000, guid: 8daa026ca3b633f4ba1cff1240986a13, type: 2}
   shadowOuterCorner: {fileID: 11400000, guid: 176bf34f7bbf3fc4b8ba0cccab4d2c4e, type: 2}
   robots: []
+  fruits: []
   robotPrefab: {fileID: 5115310729177872547, guid: 8d2a3d75972dbca4eaac15ddd564601e,
     type: 3}
 --- !u!114 &6641107913279762035
