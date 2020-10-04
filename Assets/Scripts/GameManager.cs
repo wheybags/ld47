@@ -5,6 +5,7 @@ using UnityEngine;
 using UnityEngine.Assertions;
 using UnityEngine.SceneManagement;
 using UnityEngine.Tilemaps;
+using UnityEngine.UI;
 
 public enum TileType
 {
@@ -40,6 +41,10 @@ public class GameManager : MonoBehaviour {
     public List<FruitSpawner> fruits;
     public List<GhostSpawn> spawns;
     public GameObject robotPrefab;
+
+    public Text energyGui;
+
+    public int maxMoves;
     #endregion
 
     #region Members
@@ -47,7 +52,7 @@ public class GameManager : MonoBehaviour {
     private Vector2Int _startTileIndex;
     private int _waitSteps = 0;
     private int _maxRobots = 0;
-    private int _tick;
+    public int _tick;
     private int _nextSpawnTick = 0;
     private float _nextAutoMove;
     #endregion
@@ -106,6 +111,9 @@ public class GameManager : MonoBehaviour {
     }
     
     void Update() {
+
+        energyGui.text = "Energy: " + (maxMoves - _tick) + "/" + maxMoves;
+
         if (_activeRobot < 0 && Time.time > _nextAutoMove) {
             _nextAutoMove += 0.5f;
             Resimulate(_tick + 1, true );
