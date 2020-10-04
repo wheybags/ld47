@@ -214,13 +214,10 @@ public class RobotBehavior : MonoBehaviour {
         {
             // returning to the start
             if (_isCarrying) {
-                Debug.Log("is carrying and on start tile");
                 var collider = Physics2D.OverlapCircle(cellIndex, 0.5f);
                 if (collider) {
-                    Debug.Log("collider found");
                     var spawner = collider.gameObject.GetComponent<GhostSpawn>();
                     if (spawner && spawner.fruitType == _requiredFruitType) {
-                        Debug.Log("matching spawn found");
                         _harvestedFrom.RespawnFruit();
                         SetCarryEmpty();
                         isFinished = true;
