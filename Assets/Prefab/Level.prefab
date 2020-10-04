@@ -27,7 +27,7 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 6641107913279758733}
-  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
@@ -54,7 +54,8 @@ MonoBehaviour:
   wallTopNormal: {fileID: 11400000, guid: 6ae20f5d638c4aa448010dceb2445922, type: 2}
   wallTopBottom: {fileID: 11400000, guid: 3ee2f2ad9e4476c45a2ca57745549585, type: 2}
   wallSide: {fileID: 11400000, guid: 67709e829528a7746abff42e6a4fcb7a, type: 2}
-  startTile: {fileID: 11400000, guid: 6ed911ef50aa46f45950c65ba54e3b45, type: 2}
+  activeStartTile: {fileID: 11400000, guid: 6ed911ef50aa46f45950c65ba54e3b45, type: 2}
+  inactiveStartTile: {fileID: 11400000, guid: 8ddf071d89bc7c249acc51d0fa70df66, type: 2}
   fruitTile: {fileID: 11400000, guid: 5206be0ef1f796d4194d3a418add16a4, type: 2}
   floorTile: {fileID: 11400000, guid: 23b83bb49f3c99045a8432c7e4207673, type: 2}
   pitTile: {fileID: 11400000, guid: cb8915c1e0a131a468cb400145f36332, type: 2}
@@ -65,7 +66,14 @@ MonoBehaviour:
   shadowTriangle: {fileID: 11400000, guid: 8daa026ca3b633f4ba1cff1240986a13, type: 2}
   shadowOuterCorner: {fileID: 11400000, guid: 176bf34f7bbf3fc4b8ba0cccab4d2c4e, type: 2}
   robots: []
-  fruits: []
+  fruits:
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  spawns:
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
   robotPrefab: {fileID: 5115310729177872547, guid: 8d2a3d75972dbca4eaac15ddd564601e,
     type: 3}
 --- !u!114 &6641107913279762035
@@ -2155,7 +2163,7 @@ Tilemap:
     second:
       serializedVersion: 2
       m_TileIndex: 6
-      m_TileSpriteIndex: 6
+      m_TileSpriteIndex: 10
       m_TileMatrixIndex: 0
       m_TileColorIndex: 0
       m_TileObjectToInstantiateIndex: 65535
@@ -2451,8 +2459,8 @@ Tilemap:
   - first: {x: -2, y: -1, z: 0}
     second:
       serializedVersion: 2
-      m_TileIndex: 3
-      m_TileSpriteIndex: 10
+      m_TileIndex: 0
+      m_TileSpriteIndex: 2
       m_TileMatrixIndex: 0
       m_TileColorIndex: 0
       m_TileObjectToInstantiateIndex: 65535
@@ -5114,14 +5122,14 @@ Tilemap:
       m_AllTileFlags: 2147483649
   m_AnimatedTiles: {}
   m_TileAssetArray:
-  - m_RefCount: 109
+  - m_RefCount: 110
     m_Data: {fileID: 11400000, guid: 23b83bb49f3c99045a8432c7e4207673, type: 2}
   - m_RefCount: 78
     m_Data: {fileID: 11400000, guid: 6ae20f5d638c4aa448010dceb2445922, type: 2}
   - m_RefCount: 0
     m_Data: {fileID: 0}
-  - m_RefCount: 1
-    m_Data: {fileID: 11400000, guid: 6ed911ef50aa46f45950c65ba54e3b45, type: 2}
+  - m_RefCount: 0
+    m_Data: {fileID: 0}
   - m_RefCount: 288
     m_Data: {fileID: 11400000, guid: 4992de9bff3a99d48a09d3f2183a5bb9, type: 2}
   - m_RefCount: 47
@@ -5134,7 +5142,7 @@ Tilemap:
       type: 3}
   - m_RefCount: 0
     m_Data: {fileID: 0}
-  - m_RefCount: 109
+  - m_RefCount: 110
     m_Data: {fileID: 738865816994507200, guid: 09a81326da6804c49ab97057569e50bb, type: 3}
   - m_RefCount: 0
     m_Data: {fileID: 0}
@@ -5144,9 +5152,8 @@ Tilemap:
   - m_RefCount: 47
     m_Data: {fileID: -3464519137806391378, guid: 09a81326da6804c49ab97057569e50bb,
       type: 3}
-  - m_RefCount: 1
-    m_Data: {fileID: -4683309414787270121, guid: 09a81326da6804c49ab97057569e50bb,
-      type: 3}
+  - m_RefCount: 0
+    m_Data: {fileID: 0}
   - m_RefCount: 1
     m_Data: {fileID: -1039506445941943370, guid: 09a81326da6804c49ab97057569e50bb,
       type: 3}
@@ -5157,7 +5164,7 @@ Tilemap:
     m_Data: {fileID: 7652254702291292695, guid: 09a81326da6804c49ab97057569e50bb,
       type: 3}
   - m_RefCount: 1
-    m_Data: {fileID: 2279248500995412444, guid: 09a81326da6804c49ab97057569e50bb,
+    m_Data: {fileID: -4683309414787270121, guid: 09a81326da6804c49ab97057569e50bb,
       type: 3}
   - m_RefCount: 1
     m_Data: {fileID: -4032506698630564708, guid: 09a81326da6804c49ab97057569e50bb,
