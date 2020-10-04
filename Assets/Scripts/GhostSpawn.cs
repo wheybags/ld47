@@ -13,6 +13,7 @@ public class GhostSpawn : MonoBehaviour
     
     #region Members
     public Vector2Int cellIndex;
+    public int fruitType;
     #endregion
     
     void Start() {
