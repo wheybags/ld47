@@ -205,7 +205,8 @@ public class RobotBehavior : MonoBehaviour {
 
         switch (targetTileType)
         {
-            case TileType.Block: 
+            case TileType.Block:
+                previousCellIndex = cellIndex;
                 return false;
             case TileType.Die:
                 Move(direction);
