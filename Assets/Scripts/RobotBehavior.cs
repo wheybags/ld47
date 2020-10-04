@@ -62,23 +62,14 @@ public class RobotBehavior : MonoBehaviour {
 
     private void Update()
     {
-        //Debug.DrawLine(new Vector3(0, 0, 0), _gameManager.GetTileCenterPosition(cellIndex), Color.red, 1f, false);
+        Debug.DrawLine(new Vector3(0, 0, 0), _gameManager.GetTileCenterPosition(cellIndex), Color.red, 1f, false);
 
-        if (lastMoveTime != -1)
-        {
-            const float movementTimeInSeconds = 0.1f;
+        //if (transform.position == _gameManager.GetTileCenterPosition(_spawnIndex) && _gameManager._tick != 0)
+        //{
+        //    Debug.DebugBreak();
+        //}
 
-            float timeSinceMove = Time.time - lastMoveTime;
-            float alpha = timeSinceMove * 1 / movementTimeInSeconds;
 
-            transform.position = Vector3.Lerp(_gameManager.GetTileCenterPosition(previousCellIndex), _gameManager.GetTileCenterPosition(cellIndex), alpha);
-
-            if (alpha >= 1)
-            {
-                ApplyTileEffects();
-                lastMoveTime = -1;
-            }
-        }
 
         if (isBroken && _animator.speed > 0)
         {
@@ -112,6 +103,25 @@ public class RobotBehavior : MonoBehaviour {
         }
     }
 
+    public void CustomOnPreRender()
+    {
+        if (lastMoveTime != -1)
+        {
+            const float movementTimeInSeconds = 0.1f;
+
+            float timeSinceMove = Time.time - lastMoveTime;
+            float alpha = timeSinceMove * 1 / movementTimeInSeconds;
+
+            SetRenderPosition(Vector3.Lerp(_gameManager.GetTileCenterPosition(previousCellIndex), _gameManager.GetTileCenterPosition(cellIndex), alpha));
+
+            if (alpha >= 1)
+            {
+                ApplyTileEffects();
+                lastMoveTime = -1;
+            }
+        }
+    }
+
     public void SetSpawnWait(int ticks) {
         _spawnWaitTicks = ticks;
     }
@@ -132,7 +142,7 @@ public class RobotBehavior : MonoBehaviour {
     }
     
     public void ResetSimulation() {
-        transform.position = _gameManager.GetTileCenterPosition(_spawnIndex);
+        SetRenderPosition(_gameManager.GetTileCenterPosition(_spawnIndex));
         cellIndex = _spawnIndex;
         previousCellIndex = _spawnIndex;
         lastMoveTime = -1;
@@ -284,6 +294,11 @@ public class RobotBehavior : MonoBehaviour {
 
         return false;
 
+    }
+
+    void SetRenderPosition(Vector3 pos)
+    {
+        transform.position = pos;
     }
 
     public void SetRequiredFruitType(int fruitType) {

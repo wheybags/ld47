@@ -179,7 +179,13 @@ MonoBehaviour:
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: '[R] Restart Level'
+  m_Text: '[WASD] Move
+
+    [Backspace] Undo
+
+    [R] Restart Level
+
+'
 --- !u!114 &4975040054790167317
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -5875,6 +5881,7 @@ GameObject:
   - component: {fileID: 4859784682918191123}
   - component: {fileID: 3409497880693173026}
   - component: {fileID: 5905290416562722253}
+  - component: {fileID: 4030820727172890132}
   m_Layer: 0
   m_Name: Main Camera
   m_TagString: MainCamera
@@ -5968,3 +5975,15 @@ MonoBehaviour:
   m_CropFrameX: 0
   m_CropFrameY: 0
   m_StretchFill: 0
+--- !u!114 &4030820727172890132
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8765211456468339175}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7aab916048b3276499bfe2628081f77b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
