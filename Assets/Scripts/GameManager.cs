@@ -79,7 +79,7 @@ public class GameManager : MonoBehaviour {
     void Update() {
         if (_activeRobot < 0 && Time.time > _nextAutoMove) {
             _nextAutoMove += 0.5f;
-            Resimulate(_tick + 1 );
+            Resimulate(_tick + 1, false);
         }
 
         if (robots.Count < _maxRobots && isCellBlockedByRobot(_startTileIndex) == false) {
@@ -166,11 +166,17 @@ public class GameManager : MonoBehaviour {
             robot.ResetSimulation();
         }
     }
-    
-    public void Resimulate(int steps) {
+
+    public void Resimulate(int steps, bool animate) {
+        Vector2Int[] lastPositions = new Vector2Int[robots.Count];
+        for (int i = 0; i < robots.Count; i++)
+        {
+            lastPositions[i] = robots[i].cellIndex;
+        }
+
         ResetSimulation();
         _tick = steps;
-        
+
         GameObject[] fruits = GameObject.FindGameObjectsWithTag("Resource");
         foreach (var fruit in fruits) {
             fruit.GetComponent<FruitSpawner>().RespawnFruit();
@@ -179,7 +185,9 @@ public class GameManager : MonoBehaviour {
         bool stop = false;
         for (var s = 0; s < steps; s++) {
             foreach (var robot in robots) {
-                bool thisBotStop = robot.StepSimulation(s+1);
+
+                bool thisBotStop = robot.StepSimulation(s + 1);
+
                 if (thisBotStop) {
                     stop = true;
                 }
@@ -189,7 +197,15 @@ public class GameManager : MonoBehaviour {
                 break;
             }
         }
-        
+
+        if (animate)
+        {
+            for (int i = 0; i < robots.Count; i++)
+            {
+                robots[i].previousCellIndex = lastPositions[i];
+                robots[i].lastMoveTime = Time.time;
+            }
+        }
     }
 
     public TileBase GetCellAtIndex(Vector2Int cellIndex)
@@ -273,13 +289,8 @@ public class GameManager : MonoBehaviour {
         if (_activeRobot > -1) {
             RobotBehavior robot = robots[_activeRobot];
 
-            Vector2Int lastPosition = robot.cellIndex;
-
             int step = robot.OnUndo();
-            Resimulate(step);
-
-            robot.previousCellIndex = lastPosition;
-            robot.lastMoveTime = Time.time;
+            Resimulate(step, true);
         }
     }
 

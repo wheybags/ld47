@@ -62,6 +62,8 @@ public class RobotBehavior : MonoBehaviour {
 
     private void Update()
     {
+        //Debug.DrawLine(new Vector3(0, 0, 0), _gameManager.GetTileCenterPosition(cellIndex), Color.red, 1f, false);
+
         if (lastMoveTime != -1)
         {
             const float movementTimeInSeconds = 0.1f;
@@ -157,7 +159,7 @@ public class RobotBehavior : MonoBehaviour {
                 {
                     //wall: add the movement to commands but make no movement
                     _lastCommands.Add(direction);
-                    _gameManager.Resimulate(_lastCommands.Count + _spawnWaitTicks);
+                    _gameManager.Resimulate(_lastCommands.Count + _spawnWaitTicks, false);
                     break;
                 }
                 case TileType.Die:
@@ -172,7 +174,7 @@ public class RobotBehavior : MonoBehaviour {
                     //walkable: do the movement and add it to commands then run the simulation once
                     Move(direction);
                     _lastCommands.Add(direction);
-                    _gameManager.Resimulate(_lastCommands.Count  + _spawnWaitTicks);
+                    _gameManager.Resimulate(_lastCommands.Count  + _spawnWaitTicks, false);
                     break;
                 }
             }
@@ -278,7 +280,7 @@ public class RobotBehavior : MonoBehaviour {
             _lastCommands.RemoveAt(_lastCommands.Count - 1);
         }
 
-        return _lastCommands.Count;
+        return _lastCommands.Count + _spawnWaitTicks;
     }
 
 }
