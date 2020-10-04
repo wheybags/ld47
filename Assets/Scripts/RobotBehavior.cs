@@ -8,6 +8,7 @@ public class RobotBehavior : MonoBehaviour {
     #region References
     private GameManager _gameManager;
     private GameObject _carriedItemGO;
+    private SpriteRenderer _carriedItemRenderer;
     private Animator _animator;
     private SpriteRenderer _renderer;
     #endregion
@@ -48,6 +49,8 @@ public class RobotBehavior : MonoBehaviour {
         _animator = GetComponent<Animator>();
         _renderer = GetComponent<SpriteRenderer>();
         _carriedItemGO = transform.Find("CarriedItem").gameObject;
+        _carriedItemRenderer = _carriedItemGO.GetComponent<SpriteRenderer>();
+
         _gameManager = FindObjectOfType<GameManager>();
         _renderer.material.color = tints[Random.Range(0, tints.Length)];
         _lastCommands = new List<Vector2Int>();
@@ -78,17 +81,25 @@ public class RobotBehavior : MonoBehaviour {
         {
             _animator.speed = 0;
             _renderer.flipY = true;
+            _carriedItemRenderer.flipY = true;
         }
         if (!isBroken && _animator.speed <= 0)
         {
             _animator.speed = 1;
             _renderer.flipY = false;
+            _carriedItemRenderer.flipY = false;
         }
 
         if (lastMoveLeftRight == LRDirection.Left && !_renderer.flipX)
+        {
             _renderer.flipX = true;
+            _carriedItemRenderer.flipX = true;
+        }
         else if (lastMoveLeftRight == LRDirection.Right && _renderer.flipX)
+        {
             _renderer.flipX = false;
+            _carriedItemRenderer.flipX = false;
+        }
     }
 
     public void SetControlledState(bool state) {
@@ -96,17 +107,14 @@ public class RobotBehavior : MonoBehaviour {
     }
 
     private void SetCarryEmpty() {
-        if (_isCarrying)
-        {
-            _isCarrying = false;
-        }
-        _carriedItemGO.SetActive(false);
+        _isCarrying = false;
+        _carriedItemRenderer.color = Color.clear;
     }
 
     private void SetCarryFull(FruitSpawner spawner) {
         _isCarrying = true;
         _harvestedFrom = spawner;
-        _carriedItemGO.SetActive(true);
+        _carriedItemRenderer.color = Color.white;
     }
     
     public void ResetSimulation() {
