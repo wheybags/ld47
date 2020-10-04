@@ -35,6 +35,7 @@ public class GameManager : MonoBehaviour {
     public TileBase shadowOuterCorner;
     
     public List<RobotBehavior> robots;
+    public List<FruitSpawner> fruits;
     public GameObject robotPrefab;
     #endregion
 
@@ -53,6 +54,8 @@ public class GameManager : MonoBehaviour {
         SetupShadowMap();
 
         robots = new List<RobotBehavior>();
+        fruits = new List<FruitSpawner>();
+        
         var robotGOs = GameObject.FindGameObjectsWithTag("Player");
         foreach (var robot in robotGOs) {
             var script = robot.GetComponent<RobotBehavior>();
@@ -72,6 +75,15 @@ public class GameManager : MonoBehaviour {
                 }
             }
         }
+        
+        GameObject[] fruitGOs = GameObject.FindGameObjectsWithTag("Resource");
+        
+        foreach (var fruit in fruitGOs) {
+            Debug.Log("added fruit");
+            var spawner = fruit.GetComponent<FruitSpawner>();
+            fruits.Add(spawner);
+        }
+        
         _nextSpawnTick = 0;
         _activeRobot = -1;
         _maxRobots = 1;
@@ -86,14 +98,34 @@ public class GameManager : MonoBehaviour {
     void Update() {
         if (_activeRobot < 0 && Time.time > _nextAutoMove) {
             _nextAutoMove += 0.5f;
-            Resimulate(_tick + 1, false);
+            Resimulate(_tick + 1, true );
         }
 
-        if (robots.Count < _maxRobots && isCellBlockedByRobot(_startTileIndex) == false) {
+        if (robots.Count < _maxRobots && isCellBlockedByRobot(_startTileIndex) == false && robots.Count < fruits.Count) {
             SpawnRobot(robots.Count);
             SetControlledRobot(robots.Count -1);
+            SetupFruits();
+        }
+        
+
+    }
+
+    public void SetupFruits() {
+        foreach (var fruit in fruits) {
+            if (fruit) {
+                fruit.Disappear();
+            }
         }
 
+        for (var r = 0; r < robots.Count; r++) {
+            if (fruits[r]) {
+                fruits[r].Appear();
+            }
+        }
+
+        if (_activeRobot > -1) {
+            fruits[_activeRobot].SetImportant();
+        }
     }
     
     public bool isCellBlockedByRobot(Vector2Int cellIndex) {
@@ -172,6 +204,7 @@ public class GameManager : MonoBehaviour {
         foreach (var robot in robots) {
             robot.ResetSimulation();
         }
+        SetupFruits();
     }
 
     public void Resimulate(int steps, bool animate) {
@@ -183,10 +216,9 @@ public class GameManager : MonoBehaviour {
 
         ResetSimulation();
         _tick = steps;
-
-        GameObject[] fruits = GameObject.FindGameObjectsWithTag("Resource");
+        
         foreach (var fruit in fruits) {
-            fruit.GetComponent<FruitSpawner>().RespawnFruit();
+            fruit.RespawnFruit();
         }
 
         bool stop = false;
@@ -295,6 +327,8 @@ public class GameManager : MonoBehaviour {
     void OnUndo() {
         if (_activeRobot > -1) {
             RobotBehavior robot = robots[_activeRobot];
+
+            Vector2Int lastPosition = robot.cellIndex;
 
             int step = robot.OnUndo();
             Resimulate(step, true);

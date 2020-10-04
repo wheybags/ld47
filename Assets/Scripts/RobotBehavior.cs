@@ -47,12 +47,9 @@ public class RobotBehavior : MonoBehaviour {
         new Color(1.7f, 1.0f, 1.0f, 1),
     };
 
-    private void Awake() {
+    void Start() {
         _animator = GetComponent<Animator>();
         _renderer = GetComponent<SpriteRenderer>();
-    }
-
-    void Start() {
         _carriedItemGO = transform.Find("CarriedItem").gameObject;
         _carriedItemRenderer = _carriedItemGO.GetComponent<SpriteRenderer>();
         _gameManager = FindObjectOfType<GameManager>();
@@ -105,6 +102,13 @@ public class RobotBehavior : MonoBehaviour {
             _renderer.flipX = false;
             _carriedItemRenderer.flipX = false;
         }
+        
+        if (isControlled) {
+            _renderer.material.color = new Color(2.0f, 2.0f, 1.0f, 1);
+        }
+        else {
+            _renderer.material.color = Color.white;
+        }
     }
 
     public void SetSpawnWait(int ticks) {
@@ -113,12 +117,6 @@ public class RobotBehavior : MonoBehaviour {
     
     public void SetControlledState(bool state) {
         isControlled = state;
-        if (isControlled) {
-            _renderer.material.color = new Color(2.0f, 2.0f, 1.0f, 1);
-        }
-        else {
-            _renderer.material.color = Color.white;
-        }
     }
 
     private void SetCarryEmpty() {
