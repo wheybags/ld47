@@ -221,6 +221,11 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 1894986767745222425, guid: b17a02630b7435646bf30fe51d69fd8e,
+        type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 4859784682918191123, guid: b17a02630b7435646bf30fe51d69fd8e,
         type: 3}
       propertyPath: orthographic size
@@ -346,6 +351,11 @@ PrefabInstance:
       propertyPath: spawns.Array.data[0]
       value: 
       objectReference: {fileID: 1793581539}
+    - target: {fileID: 6641107913279762034, guid: b17a02630b7435646bf30fe51d69fd8e,
+        type: 3}
+      propertyPath: maxMoves
+      value: 26
+      objectReference: {fileID: 0}
     - target: {fileID: 6641107914025261193, guid: b17a02630b7435646bf30fe51d69fd8e,
         type: 3}
       propertyPath: m_Tiles.Array.size
@@ -11491,38 +11501,6 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: b17a02630b7435646bf30fe51d69fd8e, type: 3}
---- !u!1 &2056728979 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 6641107913279758733, guid: b17a02630b7435646bf30fe51d69fd8e,
-    type: 3}
-  m_PrefabInstance: {fileID: 2056728978}
-  m_PrefabAsset: {fileID: 0}
---- !u!114 &2056728980
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2056728979}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 05dc81679b19e1442bb6efd81cbf03f7, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  cellIndex: {x: 0, y: 0}
---- !u!114 &2056728981
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2056728979}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 05dc81679b19e1442bb6efd81cbf03f7, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  cellIndex: {x: 0, y: 0}
 --- !u!1001 &2147399424
 PrefabInstance:
   m_ObjectHideFlags: 0
