@@ -40,6 +40,7 @@ public class GameManager : MonoBehaviour {
     public List<RobotBehavior> robots;
     public List<FruitSpawner> fruits;
     public List<GhostSpawn> spawns;
+    public List<Button> robotButtons;
     public GameObject robotPrefab;
 
     public Text energyGui;
@@ -406,6 +407,30 @@ public class GameManager : MonoBehaviour {
             int number = GetCurrentLevelNumber() + 1;
             SceneManager.LoadScene("Level_" + number.ToString("D2"));
         }
+    }
+
+    void ChangeToRobot(int robotIndex) {
+        if (robotIndex < _maxRobots) {
+            Resimulate(0, false);
+            robots[robotIndex].ClearCommands();
+            SetControlledRobot(robotIndex);
+        }
+    }
+    
+    void OnGhost1Select() {
+        ChangeToRobot(0);
+    }
+    
+    void OnGhost2Select() {
+        ChangeToRobot(1);
+    }
+    
+    void OnGhost3Select() {
+        ChangeToRobot(2);
+    }
+    
+    void OnGhost4Select() {
+        ChangeToRobot(3);
     }
 
     public void SetIndexToActiveSpawner(Vector2Int cellIndex) {

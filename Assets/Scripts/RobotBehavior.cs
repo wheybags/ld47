@@ -296,6 +296,10 @@ public class RobotBehavior : MonoBehaviour {
 
     }
 
+    public void ClearCommands() {
+        _lastCommands = new List<Vector2Int>();
+    }
+    
     void SetRenderPosition(Vector3 pos)
     {
         transform.position = pos;

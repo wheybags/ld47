@@ -76,6 +76,38 @@
                     "expectedControlType": "Button",
                     "processors": "",
                     "interactions": ""
+                },
+                {
+                    "name": "Ghost1Select",
+                    "type": "Button",
+                    "id": "ee1380f5-d9db-4c1d-bb26-716d535b9847",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": ""
+                },
+                {
+                    "name": "Ghost2Select",
+                    "type": "Button",
+                    "id": "d4e540e1-ef47-49d4-9b4e-e19ca45733cf",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": ""
+                },
+                {
+                    "name": "Ghost3Select",
+                    "type": "Button",
+                    "id": "28913957-015f-44c7-a789-15acf2d3df9c",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": ""
+                },
+                {
+                    "name": "Ghost4Select",
+                    "type": "Button",
+                    "id": "efc144a9-73d4-4fb6-b576-061025b88358",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": ""
                 }
             ],
             "bindings": [
@@ -230,6 +262,50 @@
                     "processors": "",
                     "groups": "",
                     "action": "NextLevel",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "eafe98f6-afa6-4d2b-b64d-51f2433c6a0f",
+                    "path": "<Keyboard>/1",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Ghost1Select",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "77fa40d6-f499-414c-9724-9bc148dd2d72",
+                    "path": "<Keyboard>/2",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Ghost2Select",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "6ab7a693-e8a2-4430-9c4a-d97fd1649df7",
+                    "path": "<Keyboard>/3",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Ghost3Select",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "4465e0c4-7c8e-4aa3-83cd-6e99171e03c8",
+                    "path": "<Keyboard>/4",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Ghost4Select",
                     "isComposite": false,
                     "isPartOfComposite": false
                 }
