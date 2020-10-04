@@ -215,8 +215,8 @@ public class GameManager : MonoBehaviour {
                     shadowMap.SetTile(new Vector3Int(x, y, 0), shadowL);
 
                 if (y != mainMap.cellBounds.max.y - 1 &&
-                    (shadowMap.GetTile(new Vector3Int(x - 1, y, 0)) == shadowT || (shadowMap.GetTile(new Vector3Int(x - 1, y, 0)) == shadowTL)) &&
-                    shadowMap.GetTile(new Vector3Int(x, y + 1, 0)) == shadowL)
+                    (shadowMap.GetTile(new Vector3Int(x - 1, y, 0)) == shadowT || shadowMap.GetTile(new Vector3Int(x - 1, y, 0)) == shadowTL) &&
+                    (shadowMap.GetTile(new Vector3Int(x, y + 1, 0)) == shadowL || shadowMap.GetTile(new Vector3Int(x, y + 1, 0)) == shadowTL))
                 {
                     shadowMap.SetTile(new Vector3Int(x, y, 0), shadowOuterCorner);
                 }
