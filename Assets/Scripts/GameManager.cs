@@ -71,6 +71,23 @@ public class GameManager : MonoBehaviour {
         SetControlledRobot(_activeRobot);
 
     }
+    
+    void Update() {
+        if (_activeRobot < 0 && Time.time > _nextAutoMove) {
+            Debug.Log("automove");
+            _nextAutoMove += 0.5f;
+            Resimulate(_tick + 1 );
+        }
+
+        if (_tick >= _nextSpawnTick && isCellBlockedByRobot(_startTileIndex) == false) {
+            SpawnRobot(0);
+            SetControlledRobot(0);
+            _nextSpawnTick += 10000;
+        }
+
+        tickText.text = "Tick: " + _tick.ToString();
+
+    }
 
     private void SetupShadowMap()
     {
