@@ -40,6 +40,9 @@ public class GameManager : MonoBehaviour {
     private int _activeRobot;
     private Vector2Int _startTileIndex;
     private int _waitSteps = 0;
+    private int _tick;
+    private int _nextSpawnTick = 0;
+    private float _nextAutoMove;
     #endregion
 
     void Start()
@@ -85,8 +88,6 @@ public class GameManager : MonoBehaviour {
             _nextSpawnTick += 10000;
         }
 
-        tickText.text = "Tick: " + _tick.ToString();
-
     }
 
     private void SetupShadowMap()
@@ -131,12 +132,14 @@ public class GameManager : MonoBehaviour {
     }
 
     public void SetControlledRobot(int robotIndex) {
-        if (robots[robotIndex]) {
-            foreach (var robot in robots) {
-                robot.SetControlledState(false);
-            }
+        foreach (var robot in robots) {
+            robot.SetControlledState(false);
+        }
+        if (robotIndex > -1 && robots[robotIndex]) {
             robots[robotIndex].SetControlledState(true);
         }
+
+        _activeRobot = robotIndex;
     }
 
     public void SelectNextRobot() {
