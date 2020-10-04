@@ -8,7 +8,6 @@ public class GhostSpawn : MonoBehaviour
 
     private GameManager _gameManager;
     private SpriteRenderer _renderer;
-    private Animator _animator;
     #endregion
     
     #region Members
@@ -18,8 +17,7 @@ public class GhostSpawn : MonoBehaviour
     
     void Start() {
         _gameManager = FindObjectOfType<GameManager>();
-        _renderer = GetComponentInChildren<SpriteRenderer>();
-        _animator = GetComponentInChildren<Animator>();
+        _renderer = GetComponent<SpriteRenderer>();
         _renderer.sprite = null;
         FixToTileCenter();
     }
