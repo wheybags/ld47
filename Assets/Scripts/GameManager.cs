@@ -115,8 +115,24 @@ public class GameManager : MonoBehaviour {
         energyGui.text = "Energy: " + (maxMoves - _tick) + "/" + maxMoves;
 
         if (_activeRobot < 0 && Time.time > _nextAutoMove) {
-            _nextAutoMove += 0.5f;
-            Resimulate(_tick + 1, true );
+            _nextAutoMove = Time.time + 0.5f;
+
+
+            bool allFinished = true;
+            foreach (RobotBehavior robot in robots)
+            {
+                if (!robot.isFinished)
+                {
+                    allFinished = false;
+                    break;
+                }
+            }
+
+            int newTick = _tick + 1;
+            if (newTick > maxMoves || allFinished)
+                newTick = 0;
+
+            Resimulate(newTick, true );
         }
 
         if (robots.Count < _maxRobots && isCellBlockedByRobot(_startTileIndex) == false && robots.Count < fruits.Count) {
