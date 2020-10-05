@@ -1,0 +1,16 @@
+{
+"companyName": "DefaultCompany",
+"productName": "ld47-roboloop",
+"productVersion": "0.1",
+"dataUrl": "ld47_pages.data.unityweb",
+"wasmCodeUrl": "ld47_pages.wasm.code.unityweb",
+"wasmFrameworkUrl": "ld47_pages.wasm.framework.unityweb",
+"graphicsAPI": ["WebGL 2.0","WebGL 1.0"],
+"webglContextAttributes": {"preserveDrawingBuffer": false},
+"splashScreenStyle": "Dark",
+"backgroundColor": "#231F20",
+"cacheControl": {"default": "must-revalidate"},
+"developmentBuild": false,
+"multithreading": false,
+"unityVersion": "2019.4.9f1"
+}
