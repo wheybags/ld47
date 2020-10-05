@@ -15,6 +15,9 @@ public class RobotBehavior : MonoBehaviour {
     private SpriteRenderer _renderer;
     private SpriteRenderer hilightRenderer;
     private Animator hilightAnimator;
+    private AudioSource audioSource;
+
+    public AudioClip dieSound;
     #endregion
 
     #region Members
@@ -65,6 +68,7 @@ public class RobotBehavior : MonoBehaviour {
         hilightRenderer = transform.Find("hilight").GetComponent<SpriteRenderer>();
         hilightAnimator = transform.Find("hilight").GetComponent<Animator>();
         _spawnIndex = cellIndex;
+        audioSource = GetComponent<AudioSource>();
         ResetSimulation();
 
         hilightRenderer.material.color = tints[_requiredFruitType];
@@ -123,6 +127,13 @@ public class RobotBehavior : MonoBehaviour {
         else {
             _renderer.material.color = Color.white;
         }
+    }
+
+    public void SetBroken()
+    {
+        isBroken = true;
+        audioSource.clip = dieSound;
+        audioSource.Play();
     }
 
     public void CustomOnPreRender()
@@ -186,7 +197,7 @@ public class RobotBehavior : MonoBehaviour {
         RobotBehavior otherRobot = _gameManager.isCellBlockedByRobot(cellIndex + direction);
         if (otherRobot && otherRobot != this)
         {
-            isBroken = true;
+            SetBroken();
             otherRobot.isBroken = true;
             return false;
         }
@@ -234,7 +245,7 @@ public class RobotBehavior : MonoBehaviour {
         TileType currentTileType = _gameManager.GetTileType(currentTile);
 
         if (currentTileType == TileType.Die)
-            isBroken = true;
+            SetBroken();
 
         if (currentTile == _gameManager.fruitTile)
         {
