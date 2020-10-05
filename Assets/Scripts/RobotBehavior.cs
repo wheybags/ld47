@@ -226,9 +226,9 @@ public class RobotBehavior : MonoBehaviour {
         if (currentTile == _gameManager.fruitTile)
         {
             // landing on a fruit spawner
-            var collider = Physics2D.OverlapCircle(cellIndex, 0.5f);
-            if (collider)
-            {
+            LayerMask mask = LayerMask.GetMask("Resource");
+            var collider = Physics2D.OverlapCircle(cellIndex, 0.5f, mask);
+            if (collider) {
                 var spawner = collider.gameObject.GetComponent<FruitSpawner>();
                 if (spawner && spawner.Harvest(_requiredFruitType))
                 {
@@ -241,7 +241,8 @@ public class RobotBehavior : MonoBehaviour {
         {
             // returning to the start
             if (_isCarrying) {
-                var collider = Physics2D.OverlapCircle(cellIndex, 0.5f);
+                LayerMask mask = LayerMask.GetMask("Spawn");
+                var collider = Physics2D.OverlapCircle(cellIndex, 0.5f,mask);
                 if (collider) {
                     var spawner = collider.gameObject.GetComponent<GhostSpawn>();
                     if (spawner && spawner.fruitType == _requiredFruitType) {
