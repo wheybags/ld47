@@ -10,9 +10,11 @@ public class RobotBehavior : MonoBehaviour {
     private GameManager _gameManager;
     private GameObject _carriedItemGO;
     private SpriteRenderer _carriedItemRenderer;
+    private Animator _carriedItemAnimator;
     private Animator _animator;
     private SpriteRenderer _renderer;
     private SpriteRenderer hilightRenderer;
+    private Animator hilightAnimator;
     #endregion
 
     #region Members
@@ -47,10 +49,13 @@ public class RobotBehavior : MonoBehaviour {
         _renderer = GetComponent<SpriteRenderer>();
         _carriedItemGO = transform.Find("CarriedItem").gameObject;
         _carriedItemRenderer = _carriedItemGO.GetComponent<SpriteRenderer>();
+        _carriedItemAnimator = _carriedItemGO.GetComponent<Animator>();
+
         _gameManager = FindObjectOfType<GameManager>();
         _lastCommands = new List<Vector2Int>();
         cellIndex = _gameManager.GetCellIndexAtPosition(transform.position);
         hilightRenderer = transform.Find("hilight").GetComponent<SpriteRenderer>();
+        hilightAnimator = transform.Find("hilight").GetComponent<Animator>();
         _spawnIndex = cellIndex;
         ResetSimulation();
 
@@ -80,6 +85,8 @@ public class RobotBehavior : MonoBehaviour {
         if (isBroken && _animator.speed > 0)
         {
             _animator.speed = 0;
+            _carriedItemAnimator.speed = 0;
+            hilightAnimator.speed = 0;
             _renderer.flipY = true;
             _carriedItemRenderer.flipY = true;
             hilightRenderer.flipY = true;
@@ -87,6 +94,8 @@ public class RobotBehavior : MonoBehaviour {
         if (!isBroken && _animator.speed <= 0)
         {
             _animator.speed = 1;
+            _carriedItemAnimator.speed = 1;
+            hilightAnimator.speed = 1;
             _renderer.flipY = false;
             _carriedItemRenderer.flipY = false;
             hilightRenderer.flipY = false;
