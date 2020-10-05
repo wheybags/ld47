@@ -126,7 +126,15 @@ public class GameManager : MonoBehaviour {
     }
     
     void Update() {
-        energyGui.text = "Level " + GetCurrentLevelNumber() + "\nEnergy: " + (maxMoves - _tick) + "/" + maxMoves;
+
+        string levelText = "Level " + GetCurrentLevelNumber();
+        string energyText = "\nEnergy: " + (maxMoves - _tick) + "/" + maxMoves;
+
+        if (maxMoves - _tick == 0 && ((int)Time.time) % 2 == 0)
+            energyGui.text = levelText + "<color=red>" + energyText + "</color>";
+        else
+            energyGui.text = levelText + energyText;
+
 
         if (_activeRobot < 0 && Time.time > _nextAutoMove) {
             _nextAutoMove = Time.time + autoDelay;
