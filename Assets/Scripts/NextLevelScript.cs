@@ -9,4 +9,9 @@ public class NextLevelScript : MonoBehaviour {
     public void OnClick() {
         SceneManager.LoadScene(nextSceneName);
     }
+
+    public void QuitGame()
+    {
+        Application.Quit();
+    }
 }
