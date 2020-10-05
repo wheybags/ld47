@@ -43,6 +43,14 @@ public class RobotBehavior : MonoBehaviour {
 
     #endregion
 
+    public static Color[] tints = new Color[]
+    {
+        new Color(0.41f,0.12f,0.05f),
+        new Color(0.14f,0.41f,0.25f),
+        new Color(0.19f,0.4f,0.58f),
+        new Color(1f,0.95f,0f),
+    };
+
 
     void Start() {
         _animator = GetComponent<Animator>();
@@ -58,15 +66,6 @@ public class RobotBehavior : MonoBehaviour {
         hilightAnimator = transform.Find("hilight").GetComponent<Animator>();
         _spawnIndex = cellIndex;
         ResetSimulation();
-
-
-        Color[] tints = new Color[]
-        {
-            new Color(0.41f,0.12f,0.05f),
-            new Color(0.14f,0.41f,0.25f),
-            new Color(0.19f,0.4f,0.58f),
-            new Color(1f,0.95f,0f),
-        };
 
         hilightRenderer.material.color = tints[_requiredFruitType];
     }

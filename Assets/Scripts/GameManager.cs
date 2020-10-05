@@ -254,24 +254,25 @@ public class GameManager : MonoBehaviour {
 
         _activeRobot = robotIndex;
 
-        foreach (var button in robotButtons) {
-            button.GetComponent<Image>().sprite = brownButtonSprite;
+        for (int i = 0; i < robotButtons.Count; i++)
+        { 
+            robotButtons[i].GetComponent<Image>().sprite = whiteButtonSprite;
+
+            if (i < robots.Count)
+            { 
+                robotButtons[i].GetComponent<Image>().color = RobotBehavior.tints[i];
+                robotButtons[i].interactable = true;
+            }
+            else
+            {
+                robotButtons[i].interactable = false;
+            }
         }
         
         if (_activeRobot > -1) {
             spawns[_activeRobot].ActivateSpawner();
-            robotButtons[_activeRobot].GetComponent<Image>().sprite = whiteButtonSprite;
         }
         
-        for (var i = 0; i < robotButtons.Count; i++) {
-            if (i < _maxRobots) {
-                robotButtons[i].interactable = true;
-            }
-            else {
-                robotButtons[i].interactable = false;
-            }
-        }
-
         robotButtons[4].interactable = true;
 
         if (robots.Count == 1) {
