@@ -1386,7 +1386,7 @@ RectTransform:
   m_AnchorMin: {x: 0.5, y: 1}
   m_AnchorMax: {x: 0.5, y: 1}
   m_AnchoredPosition: {x: 0, y: -256.38}
-  m_SizeDelta: {x: 95.4115, y: 26.429855}
+  m_SizeDelta: {x: 121.33, y: 37}
   m_Pivot: {x: 0.5, y: 0.99999994}
 --- !u!222 &8444185213605296447
 CanvasRenderer:
@@ -1428,7 +1428,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: 'Level Complete!
+  m_Text: 'These thralls are bound correctly
 
     [N] for next level'
 --- !u!114 &5075374921620997674
