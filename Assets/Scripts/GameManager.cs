@@ -274,7 +274,7 @@ public class GameManager : MonoBehaviour {
 
         robotButtons[4].interactable = true;
 
-        if (fruits.Count == 1) {
+        if (robots.Count == 1) {
             buttonPanel.SetActive(false);
         }
         else {
